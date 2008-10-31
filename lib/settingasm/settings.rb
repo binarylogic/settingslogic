@@ -2,7 +2,7 @@ module Settingasm
   # = Setting
   #
   # A simple settings solution using a YAML file. See README for more information.
-  class Setting
+  class Settings
     class << self
       def name # :nodoc:
         if instance._settings.key?("name")
@@ -31,10 +31,10 @@ module Settingasm
     
     # Initializes a new settings object. You can initialize an object in any of the following ways:
     #
-    #   Setting.new(:application) # will look for config/application.yml
-    #   Setting.new("application.yaml") # will look for application.yaml
-    #   Setting.new("/var/configs/application.yml") # will look for /var/configs/application.yml
-    #   Setting.new(:config1 => 1, :config2 => 2)
+    #   Settings.new(:application) # will look for config/application.yml
+    #   Settings.new("application.yaml") # will look for application.yaml
+    #   Settings.new("/var/configs/application.yml") # will look for /var/configs/application.yml
+    #   Settings.new(:config1 => 1, :config2 => 2)
     #
     # Basically if you pass a symbol it will look for that file in the configs directory of your rails app, if you are using this in rails. If you pass a string it should be an absolute path to your settings file.
     # Then you can pass a hash, and it just allows you to access the hash via methods.
