@@ -6,7 +6,7 @@ So here is my question to you.....is Settingasm a great settings solution or the
 
 == Create your settings
 
-This is typical YAML file, notice ERB is allowed.
+This is a typical YAML file, notice ERB is allowed.
 
   # app/config/application.yml
   defaults: &defaults
@@ -45,7 +45,8 @@ This is typical YAML file, notice ERB is allowed.
 == Multiple settings
 
   settings1 = Settings.new(:settings1) # looks for config/settings1.yml
-  settings2 = Settings.new("setting2.yaml") # looks for config/settings2.yml
+  settings2 = Settings.new("setting2.yaml") # looks for settings2.yml
+  settings2 = Settings.new("/abs/path/setting2.yaml") # looks for /abs/path/settings2.yml
   settings3 = Settings.new(:some_setting => "some value")
 
 == Configure
