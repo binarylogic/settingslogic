@@ -6,11 +6,11 @@ So here is my question to you.....is Settingasm a great settings solution or the
 
 == Create your settings
 
-This is a typical YAML file, notice ERB is allowed.
+By default Settingasm tries to load config/application.yml. This is just a typical YAML file, notice ERB is allowed.
 
   # app/config/application.yml
   defaults: &defaults
-    cool_setting: this is cool
+    cool:
       saweet: nested settings
     neat_setting: 24
     awesome_setting: <%= "Did you know 5 + 5 = " + (5 + 5) + "?" %>
@@ -31,7 +31,7 @@ This is a typical YAML file, notice ERB is allowed.
   => "development"
   
   >> Settings.cool
-  => "this is cool"
+  => "#<Settingasm::Settings ... >"
   
   >> Settings.cool.saweet
   => "nested settings"
