@@ -63,7 +63,7 @@ Configuration is optional. See Settingasm::Config for more details.
 
 == Helpful links
 
-*	<b>Documentation:</b> http://settingasm.rubyforge.org
+*	<b>Documentation:</b> http://settingasm.rubyforge.org (as soon as ruby forge approves my project)
 * <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingasm
 
 
