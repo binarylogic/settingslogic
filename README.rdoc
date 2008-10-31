@@ -36,7 +36,7 @@ This is a typical YAML file, notice ERB is allowed.
   >> Settings.cool.saweet
   => "nested settings"
   
-  >> Settings.new_setting
+  >> Settings.neat_setting
   => 800
   
   >> Settings.awesome_setting
@@ -45,8 +45,8 @@ This is a typical YAML file, notice ERB is allowed.
 == Multiple settings
 
   settings1 = Settings.new(:settings1) # looks for config/settings1.yml
-  settings2 = Settings.new("setting2.yaml") # looks for settings2.yml
-  settings2 = Settings.new("/abs/path/setting2.yaml") # looks for /abs/path/settings2.yml
+  settings2 = Settings.new("settings2.yaml") # looks for settings2.yml
+  settings2 = Settings.new("/abs/path/settings2.yaml") # looks for /abs/path/settings2.yml
   settings3 = Settings.new(:some_setting => "some value")
 
 == Configure

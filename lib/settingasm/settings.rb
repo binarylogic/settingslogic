@@ -12,7 +12,7 @@ module Settingasm
         end
       end
       
-      # Resets the singleton instance. Useful if you are changing the configuration on the fly. If you are changing the configuration on the fly you could consider creating instances.
+      # Resets the singleton instance. Useful if you are changing the configuration on the fly. If you are changing the configuration on the fly you should consider creating instances.
       def reset!
         @instance = nil
       end
