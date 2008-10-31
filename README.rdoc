@@ -1,0 +1,73 @@
+= Settingasm
+
+Settingasm is my personal solution to application wide settings that uses an ERB enabled YAML file. It's pretty simple and straightforward, which is why I like it. I decided to go ahead and share it with the world. 
+
+So here is my question to you.....is Settingasm a great settings solution or the greatest?
+
+== 1. Configure
+
+Configuration is optional. See Settingasm::Config for more details.
+
+  # config/initializers/settingasm.rb
+  Settingasm::Config.configure do |config|
+    config.file_name = :config # will look for config/config.yml
+    config.file_name = "config" # will look for config
+    config.file_name = "config.yaml" # will look for confg.yaml
+    config.file_name = "/absolute/path/config.yml" # will look for /absolute/path/config.yaml
+    
+    config.class_name = "Setting" # use Setting.my_setting instead of Settingasm::Setting.my_setting
+  end
+
+== 2. Create your settings
+
+This is typical YAML file, notice ERB is allowed.
+
+  # app/config/application.yml
+  defaults: &defaults
+    cool_setting: this is cool
+      saweet: nested settings
+    neat_setting: 24
+    awesome_setting: <%= "Did you know 5 + 5 = " + (5 + 5) + "?" %>
+  
+  development:
+    <<: *defaults
+    neat_setting: 800
+
+  test:
+    <<: *defaults
+
+  production:
+    <<: *defaults
+
+== Access your settings
+
+I use Setting because I specified it in my configuration. Otherwise you would have to use Settingasm::Setting. Since Setting is such a generic name I let you specify your own in the configuration. You could use anything you want.
+
+  >> RAILS_ENV
+  => "development"
+  
+  >> Setting.cool
+  => "this is cool"
+  
+  >> Setting.cool.saweet
+  => "nested settings"
+  
+  >> Setting.new_setting
+  => 800
+  
+  >> Setting.awesome_setting
+  => "Did you know 5 + 5 = 10?"
+
+== Multiple settings
+
+  settings1 = Setting.new(:settings1) # looks for config/settings1.yml
+  settings2 = Setting.new("setting2.yaml") # looks for config/settings2.yml
+  settings3 = Setting.new(:some_setting => "some value")
+  
+== Helpful links
+
+*	<b>Documentation:</b> http://settingasm.rubyforge.org
+* <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingasm
+
+
+Copyright (c) 2008 {Ben Johnson}[http://github.com/binarylogic] of {Binary Logic}[http://www.binarylogic.com], released under the MIT license 

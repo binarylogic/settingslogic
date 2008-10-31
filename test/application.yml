@@ -1,0 +1,5 @@
+setting1:
+  setting1_child: saweet
+
+setting2: 5
+setting3: <%= 5 * 5 %>

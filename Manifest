@@ -1,0 +1,13 @@
+CHANGELOG.rdoc
+init.rb
+lib/settingasm/config.rb
+lib/settingasm/setting.rb
+lib/settingasm/version.rb
+lib/settingasm.rb
+MIT-LICENSE
+Rakefile
+README.rdoc
+test/test_config.rb
+test/test_helper.rb
+test/test_setting.rb
+Manifest
