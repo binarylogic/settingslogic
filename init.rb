@@ -1,1 +1,1 @@
-require "settingasm"
+require "settingslogic"

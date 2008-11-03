@@ -1,12 +1,12 @@
-= Settingasm
+= Settinglogic
 
-Settingasm is my personal solution to application wide settings that uses an ERB enabled YAML file. It's pretty simple and straightforward, which is why I like it. I decided to go ahead and share it with the world. 
+Settinglogic is an old library of mine that I decided to go ahead and share with the world. It's nothing crazy or new. Just a simple solution to a simple problem. Settinglogic provides globally accessible settings via an ERB enabled YAML file. It has been great for my apps, maybe you will enjoy it too.
 
-So here is my question to you.....is Settingasm a great settings solution or the greatest?
+So here is my question to you.....is Settinglogic a great settings solution or the greatest?
 
 == Create your settings
 
-By default Settingasm tries to load config/application.yml. This is just a typical YAML file, notice ERB is allowed.
+By default Settinglogic tries to load config/application.yml. This is just a typical YAML file, notice ERB is allowed.
 
   # app/config/application.yml
   defaults: &defaults
@@ -31,7 +31,7 @@ By default Settingasm tries to load config/application.yml. This is just a typic
   => "development"
   
   >> Settings.cool
-  => "#<Settingasm::Settings ... >"
+  => "#<Settinglogic::Settings ... >"
   
   >> Settings.cool.saweet
   => "nested settings"
@@ -51,10 +51,10 @@ By default Settingasm tries to load config/application.yml. This is just a typic
 
 == Configure
 
-Configuration is optional. See Settingasm::Config for more details.
+Configuration is optional. See Settinglogic::Config for more details.
 
-  # config/initializers/settingasm.rb
-  Settingasm::Config.configure do |config|
+  # config/initializers/settingslogic.rb
+  Settinglogic::Config.configure do |config|
     config.file_name = :config # will look for config/config.yml
     config.file_name = "config" # will look for config
     config.file_name = "config.yaml" # will look for confg.yaml
@@ -63,8 +63,8 @@ Configuration is optional. See Settingasm::Config for more details.
 
 == Helpful links
 
-*	<b>Documentation:</b> http://settingasm.rubyforge.org (as soon as ruby forge approves my project)
-* <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingasm
+*	<b>Documentation:</b> http://settingslogic.rubyforge.org (as soon as ruby forge approves my project)
+* <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingslogic
 
 
 Copyright (c) 2008 {Ben Johnson}[http://github.com/binarylogic] of {Binary Logic}[http://www.binarylogic.com], released under the MIT license 

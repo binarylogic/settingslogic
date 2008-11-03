@@ -1,15 +1,15 @@
 require 'rubygems'
 require 'echoe'
 
-require File.dirname(__FILE__) << "/lib/settingasm/version"
+require File.dirname(__FILE__) << "/lib/settingslogic/version"
 
-Echoe.new 'settingasm' do |p|
-  p.version = Settingasm::Version::STRING
+Echoe.new 'settingslogic' do |p|
+  p.version = Settinglogic::Version::STRING
   p.author = "Ben Johnson of Binary Logic"
   p.email  = 'bjohnson@binarylogic.com'
-  p.project = 'settingasm'
+  p.project = 'settingslogic'
   p.summary = "Simple and straightforward application wide settings"
-  p.url = "http://github.com/binarylogic/settingasm"
+  p.url = "http://github.com/binarylogic/settingslogic"
   p.dependencies = []
   p.include_rakefile = true
 end

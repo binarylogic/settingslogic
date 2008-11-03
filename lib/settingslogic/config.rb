@@ -1,6 +1,6 @@
-module Settingasm
+module Settinglogic
   # = Config
-  # Sets configuration on Settingasm.
+  # Sets configuration on Settinglogic.
   class Config
     class << self
       def configure

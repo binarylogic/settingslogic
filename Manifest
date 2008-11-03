@@ -1,9 +1,9 @@
 CHANGELOG.rdoc
 init.rb
-lib/settingasm/config.rb
-lib/settingasm/settings.rb
-lib/settingasm/version.rb
-lib/settingasm.rb
+lib/settingslogic/config.rb
+lib/settingslogic/settings.rb
+lib/settingslogic/version.rb
+lib/settingslogic.rb
 Manifest
 MIT-LICENSE
 Rakefile
