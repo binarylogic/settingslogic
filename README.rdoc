@@ -9,6 +9,19 @@ So here is my question to you.....is Settingslogic a great settings solution or 
 *	<b>Documentation:</b> http://settingslogic.rubyforge.org
 * <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingslogic
 
+== Install and use
+
+  sudo gem install settingslogic
+
+For rails
+
+  $ cd vendor/plugins
+  $ sudo gem unpack settingslogic
+
+Or as a plugin
+
+  script/plugin install git://github.com/binarylogic/settingslogic.git
+
 == Create your settings
 
 By default Settingslogic tries to load config/application.yml. This is just a typical YAML file, notice ERB is allowed.
