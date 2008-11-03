@@ -1,4 +1,4 @@
-module Settinglogic
+module Settingslogic
   # = Setting
   #
   # A simple settings solution using a YAML file. See README for more information.

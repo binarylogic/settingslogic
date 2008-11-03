@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 class TestConfig < Test::Unit::TestCase
   def test_settings_file
-    Settinglogic::Config.configure do |config|
+    Settingslogic::Config.configure do |config|
       config.settings_file = File.dirname(__FILE__) + '/application2.yml'
     end
     

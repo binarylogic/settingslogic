@@ -1,6 +1,6 @@
-module Settinglogic
+module Settingslogic
   # = Config
-  # Sets configuration on Settinglogic.
+  # Sets configuration on Settingslogic.
   class Config
     class << self
       def configure
