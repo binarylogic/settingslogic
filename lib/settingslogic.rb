@@ -10,4 +10,4 @@ rescue(NameError)
 end
 
 # Since we don't have a Settings constant, lets go ahead and use it
-::Settings = Settingslogic::Settings unless defined?(Settings)
+::Settings = Settingslogic::Settings unless defined?(Settings) 

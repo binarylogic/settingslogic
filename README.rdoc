@@ -4,6 +4,11 @@ Settingslogic is an old library of mine that I decided to go ahead and share wit
 
 So here is my question to you.....is Settingslogic a great settings solution or the greatest?
 
+== Helpful links
+
+*	<b>Documentation:</b> http://settingslogic.rubyforge.org
+* <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingslogic
+
 == Create your settings
 
 By default Settingslogic tries to load config/application.yml. This is just a typical YAML file, notice ERB is allowed.
@@ -60,11 +65,6 @@ Configuration is optional. See Settingslogic::Config for more details.
     config.file_name = "config.yaml" # will look for confg.yaml
     config.file_name = "/absolute/path/config.yml" # will look for /absolute/path/config.yaml
   end
-
-== Helpful links
-
-*	<b>Documentation:</b> http://settingslogic.rubyforge.org (as soon as ruby forge approves my project)
-* <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingslogic
 
 
 Copyright (c) 2008 {Ben Johnson}[http://github.com/binarylogic] of {Binary Logic}[http://www.binarylogic.com], released under the MIT license 
