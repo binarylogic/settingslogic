@@ -13,12 +13,12 @@ So here is my question to you.....is Settingslogic a great settings solution or 
 
   sudo gem install settingslogic
 
-For rails
+For rails, as a gem (recommended):
 
-  $ cd vendor/plugins
-  $ sudo gem unpack settingslogic
+  # config/environment.rb
+  config.gem "settingslogic"
 
-Or as a plugin
+Or as a plugin (for older versions of rails)
 
   script/plugin install git://github.com/binarylogic/settingslogic.git
 
@@ -76,7 +76,7 @@ Configuration is optional. See Settingslogic::Config for more details.
     config.file_name = :config # will look for config/config.yml
     config.file_name = "config" # will look for config
     config.file_name = "config.yaml" # will look for confg.yaml
-    config.file_name = "/absolute/path/config.yml" # will look for /absolute/path/config.yaml
+    config.file_name = "/absolute/path/config.yml" # will look for /absolute/path/config.yml
   end
 
 
