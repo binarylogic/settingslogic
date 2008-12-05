@@ -44,7 +44,7 @@ module Settingslogic
         self._settings = YAML.load(ERB.new(File.read(file_path)).result)
         self._settings = _settings[RAILS_ENV] if defined?(RAILS_ENV)
       else
-        raise ArgumentError.new("Your settings must be a hash or a name of a file via a String or a Symbol")
+        raise ArgumentError.new("Your settings must be a hash, a symbol representing the name of the .yml file in your config directory, or a string representing the abosolute path to your settings file.")
       end
       define_settings!
     end
@@ -55,6 +55,7 @@ module Settingslogic
       end
       
       def define_settings!
+        return if _settings.nil?
         _settings.each do |key, value|
           case value
           when Hash
