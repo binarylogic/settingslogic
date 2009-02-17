@@ -2,7 +2,7 @@ module Settingslogic
   # = Setting
   #
   # A simple settings solution using a YAML file. See README for more information.
-  class Settings
+  class Settings < Hash
     class << self
       def name # :nodoc:
         instance._settings.key?("name") ? instance.name : super
@@ -37,12 +37,12 @@ module Settingslogic
     def initialize(name_or_hash = Config.settings_file)
       case name_or_hash
       when Hash
-        self._settings = name_or_hash
+        self.update name_or_hash
       when String, Symbol
         root_path = defined?(RAILS_ROOT) ? "#{RAILS_ROOT}/config/" : ""
         file_path = name_or_hash.is_a?(Symbol) ? "#{root_path}#{name_or_hash}.yml" : name_or_hash
-        self._settings = YAML.load(ERB.new(File.read(file_path)).result)
-        self._settings = _settings[RAILS_ENV] if defined?(RAILS_ENV)
+        self.update YAML.load(ERB.new(File.read(file_path)).result).to_hash
+        self.update self[RAILS_ENV] if defined?(RAILS_ENV)
       else
         raise ArgumentError.new("Your settings must be a hash, a symbol representing the name of the .yml file in your config directory, or a string representing the abosolute path to your settings file.")
       end
@@ -55,19 +55,18 @@ module Settingslogic
       end
       
       def define_settings!
-        return if _settings.nil?
-        _settings.each do |key, value|
+        self.each do |key, value|
           case value
           when Hash
             instance_eval <<-"end_eval", __FILE__, __LINE__
               def #{key}
-                @#{key} ||= self.class.new(_settings["#{key}"])
+                @#{key} ||= self.class.new(self["#{key}"])
               end
             end_eval
           else
             instance_eval <<-"end_eval", __FILE__, __LINE__
               def #{key}
-                @#{key} ||= _settings["#{key}"]
+                @#{key} ||= self["#{key}"]
               end
             end_eval
           end
