@@ -1,3 +1,7 @@
+== 1.0.1 released 2009-04-02
+
+* Inherit from hash.
+
 == 1.0.0 released 2008-12-05
 
 * Only define methods if we have settings.
