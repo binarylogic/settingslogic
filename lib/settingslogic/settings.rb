@@ -1,11 +1,9 @@
 module Settingslogic
-  # = Setting
-  #
   # A simple settings solution using a YAML file. See README for more information.
   class Settings < Hash
     class << self
       def name # :nodoc:
-        instance._settings.key?("name") ? instance.name : super
+        instance.key?("name") ? instance.name : super
       end
       
       # Resets the singleton instance. Useful if you are changing the configuration on the fly. If you are changing the configuration on the fly you should consider creating instances.

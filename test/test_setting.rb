@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
 class TestSetting < Test::Unit::TestCase
+  def test_conflicting_class_methods
+    assert_equal "test", Settings.name
+  end
+  
   def test_singleton_access
     assert_equal Settings, Settings.setting1.class
     assert_equal "saweet", Settings.setting1.setting1_child

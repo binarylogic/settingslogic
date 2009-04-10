@@ -1,5 +1,4 @@
 module Settingslogic
-  # = Config
   # Sets configuration on Settingslogic.
   class Config
     class << self
