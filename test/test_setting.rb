@@ -29,4 +29,15 @@ class TestSetting < Test::Unit::TestCase
     settings1 = Settings.new(File.dirname(__FILE__) + '/application.yml')
     assert_raise(NoMethodError) { settings1.doesnt_exist }
   end
+  
+  def test_initialized_with_hash
+    settings1 = Settings.new(
+        :silly => 5,
+        'fun' => 25,
+        :neat => { 'cool' => { :awesome => "BenJohnson" } }
+      )
+    assert_equal "BenJohnson", settings1.neat.cool.awesome
+    assert_equal 5, settings1.silly
+    assert_equal 25, settings1.fun
+  end
 end
