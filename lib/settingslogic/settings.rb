@@ -58,13 +58,13 @@ module Settingslogic
           when Hash
             instance_eval <<-"end_eval", __FILE__, __LINE__
               def #{key}
-                @#{key} ||= self.class.new(self["#{key}"])
+                @#{key} ||= self.class.new(self[#{key.inspect}])
               end
             end_eval
           else
             instance_eval <<-"end_eval", __FILE__, __LINE__
               def #{key}
-                @#{key} ||= self["#{key}"]
+                @#{key} ||= self[#{key.inspect}]
               end
             end_eval
           end
