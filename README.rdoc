@@ -1,12 +1,13 @@
 = Settingslogic
 
-Settingslogic is an old library of mine that I decided to go ahead and share with the world. It's nothing crazy or new. Just a simple solution to a simple problem. Settingslogic provides globally accessible settings via an ERB enabled YAML file. It has been great for my apps, maybe you will enjoy it too.
+Settingslogic is an old library of mine that I decided to go ahead and share with the world. It's nothing crazy or new. Just a simple solution to a simple problem. Settingslogic provides globally accessible settings via an ERB enabled YAML file using a singleton design pattern. It has been great for my apps, maybe you will enjoy it too.
 
 So here is my question to you.....is Settingslogic a great settings solution or the greatest?
 
 == Helpful links
 
 *	<b>Documentation:</b> http://settingslogic.rubyforge.org
+*	<b>Repository:</b> http://github.com/binarylogic/settingslogic/tree/master
 * <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingslogic
 
 == Install and use
@@ -42,6 +43,8 @@ By default Settingslogic tries to load config/application.yml. This is just a ty
 
   production:
     <<: *defaults
+
+Take note of the environment namespacing. If your framework supports environments this is a good way to support environment specific settings. If you are using this in an area where there are no environment disregard the namespacing. It will work just fine without it.
 
 == Access your settings
 

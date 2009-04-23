@@ -1,3 +1,7 @@
+== 1.0.3 released 2009-04-23
+
+* Fix Settings initialized with a Hash to work with both symbol and string hash keys.
+
 == 1.0.2 released 2009-04-09
 
 * Call key? off of the self in the class level name method.
