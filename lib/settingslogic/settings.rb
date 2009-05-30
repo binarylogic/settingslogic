@@ -66,6 +66,9 @@ module Settingslogic
               def #{key}
                 @#{key} ||= self[#{key.inspect}]
               end
+              def #{key}=(value)
+                @#{key} = value
+              end
             end_eval
           end
         end
