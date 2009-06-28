@@ -40,4 +40,24 @@ class TestSetting < Test::Unit::TestCase
     assert_equal 5, settings1.silly
     assert_equal 25, settings1.fun
   end
+  
+  def test_environment_specific_settings
+    in_test_environment do
+      settings1 = Settings.new(File.dirname(__FILE__) + '/application3.yml')
+      assert_equal 25, settings1.fun
+      assert_equal "test_specific", settings1.silly
+    end
+  end
+  
+  def test_environment_specific_settings_when_initialized_with_hash
+    in_test_environment do
+      settings1 = Settings.new(
+          :silly => 5,
+          'fun' => 25,
+          :test => { :silly => "test_specific" }
+        )
+      assert_equal 25, settings1.fun
+      assert_equal "test_specific", settings1.silly
+    end
+  end
 end

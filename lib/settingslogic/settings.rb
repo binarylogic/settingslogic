@@ -40,9 +40,12 @@ module Settingslogic
         root_path = defined?(RAILS_ROOT) ? "#{RAILS_ROOT}/config/" : ""
         file_path = name_or_hash.is_a?(Symbol) ? "#{root_path}#{name_or_hash}.yml" : name_or_hash
         self.update YAML.load(ERB.new(File.read(file_path)).result).to_hash
-        self.update self[RAILS_ENV] if defined?(RAILS_ENV)
       else
         raise ArgumentError.new("Your settings must be a hash, a symbol representing the name of the .yml file in your config directory, or a string representing the abosolute path to your settings file.")
+      end
+      if defined?(RAILS_ENV)
+        rails_env = self.keys.include?(RAILS_ENV) ? RAILS_ENV : RAILS_ENV.to_sym
+        self.update self[rails_env] if self[rails_env]
       end
       define_settings!
     end
@@ -65,6 +68,9 @@ module Settingslogic
             instance_eval <<-"end_eval", __FILE__, __LINE__
               def #{key}
                 @#{key} ||= self[#{key.inspect}]
+              end
+              def #{key}=(value)
+                @#{key} = value
               end
             end_eval
           end

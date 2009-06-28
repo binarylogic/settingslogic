@@ -18,4 +18,10 @@ class Test::Unit::TestCase
     configure
     Settingslogic::Settings.reset!
   end
+  
+  def in_test_environment(&block)
+    Settingslogic::Settings.const_set :RAILS_ENV, "test"
+    block.call
+    Settingslogic::Settings.send :remove_const, :RAILS_ENV
+  end
 end
