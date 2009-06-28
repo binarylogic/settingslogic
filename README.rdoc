@@ -6,20 +6,21 @@ So here is my question to you.....is Settingslogic a great settings solution or 
 
 == Helpful links
 
-*	<b>Documentation:</b> http://settingslogic.rubyforge.org
+*	<b>Documentation:</b> http://rdoc.info/projects/binarylogic/settingslogic
 *	<b>Repository:</b> http://github.com/binarylogic/settingslogic/tree/master
 * <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingslogic
 
 == Install and use
 
+Install from rubyforge:
+
   sudo gem install settingslogic
 
-For rails, as a gem (recommended):
+Install from github:
 
-  # config/environment.rb
-  config.gem "settingslogic"
+  sudo gem install binarylogic-settingslogc
 
-Or as a plugin (for older versions of rails)
+Or as a plugin
 
   script/plugin install git://github.com/binarylogic/settingslogic.git
 

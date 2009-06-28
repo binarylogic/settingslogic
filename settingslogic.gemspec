@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "lib/settingslogic/config.rb",
      "lib/settingslogic/settings.rb",
      "rails/init.rb",
+     "settingslogic.gemspec",
      "test/application.yml",
      "test/application2.yml",
      "test/application3.yml",
