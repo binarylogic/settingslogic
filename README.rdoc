@@ -8,7 +8,7 @@ So here is my question to you.....is Settingslogic a great settings solution or 
 
 *	<b>Documentation:</b> http://rdoc.info/projects/binarylogic/settingslogic
 *	<b>Repository:</b> http://github.com/binarylogic/settingslogic/tree/master
-* <b>Bugs / feature suggestions:</b> http://binarylogic.lighthouseapp.com/projects/19028-settingslogic
+* <b>Issues:</b> http://github.com/binarylogic/settingslogic/issues
 
 == Install and use
 
@@ -18,7 +18,7 @@ Install from rubyforge:
 
 Install from github:
 
-  sudo gem install binarylogic-settingslogc
+  sudo gem install binarylogic-settingslogic
 
 Or as a plugin
 
