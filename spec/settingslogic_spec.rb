@@ -17,10 +17,6 @@ describe "Settingslogic" do
     Settings.setting3.should == 25
   end
   
-  it "should raise an error for unfound settings" do
-    lambda { Settings.undefined }.should raise_error(Settingslogic::UndefinedSetting)
-  end
-  
   it "should namespace settings" do
     Settings2.setting1_child.should == "saweet"
   end

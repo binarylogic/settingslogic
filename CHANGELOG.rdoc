@@ -1,3 +1,7 @@
+== 2.0.2 released 2009-08-22
+
+* Define methods during method_missing instead of during initialization. Allows for modification on the fly.
+
 == 2.0.0 released 2009-08-22
 
 * Less magic, instead of automatically defining a Settings constant, you should define your own constant. See the readme for an example.

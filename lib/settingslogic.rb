@@ -3,8 +3,6 @@ require "erb"
 
 # A simple settings solution using a YAML file. See README for more information.
 class Settingslogic < Hash
-  class UndefinedSetting < StandardError; end
-  
   class << self
     def name # :nodoc:
       instance.key?("name") ? instance.name : super
@@ -54,34 +52,16 @@ class Settingslogic < Hash
       hash = hash[self.class.namespace] if self.class.namespace
       self.update hash
     end
-    
-    define_settings!
   end
   
   private
     def method_missing(name, *args, &block)
-      raise UndefinedSetting.new("The '#{name}' was not found in your configuration file: #{self.class.source}")
-    end
-    
-    def define_settings!
-      self.each do |key, value|
-        case value
-        when Hash
-          instance_eval <<-"end_eval", __FILE__, __LINE__
-            def #{key}
-              @#{key} ||= self.class.new(self[#{key.inspect}])
-            end
-          end_eval
-        else
-          instance_eval <<-"end_eval", __FILE__, __LINE__
-            def #{key}
-              @#{key} ||= self[#{key.inspect}]
-            end
-            def #{key}=(value)
-              @#{key} = value
-            end
-          end_eval
-        end
+      if key?(name.to_s)
+        value = self[name.to_s].is_a?(Hash) ? self.class.new(self[name.to_s]) : self[name.to_s]
+        self.class.send(:define_method, name) { value }
+        send(name)
+      else
+        super
       end
     end
 end
