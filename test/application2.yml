@@ -1,6 +1,0 @@
-neat:
-  cool:
-    awesome: <%= "Ben" + "Johnson" %>
-
-silly: 5
-fun: <%= 5 * 5 %>

@@ -1,6 +1,6 @@
 = Settingslogic
 
-Settingslogic is an old library of mine that I decided to go ahead and share with the world. It's nothing crazy or new. Just a simple solution to a simple problem. Settingslogic provides globally accessible settings via an ERB enabled YAML file using a singleton design pattern. It has been great for my apps, maybe you will enjoy it too.
+Settingslogic is a simple configuration / settings solution that uses an ERB enabled YAML file. It has been great for my apps, maybe you will enjoy it too.
 
 So here is my question to you.....is Settingslogic a great settings solution or the greatest?
 
@@ -24,9 +24,22 @@ Or as a plugin
 
   script/plugin install git://github.com/binarylogic/settingslogic.git
 
-== Create your settings
+== 1. Define your constant
 
-By default Settingslogic tries to load config/application.yml. This is just a typical YAML file, notice ERB is allowed.
+Instead of defining a Settings constant for you, that task is left to you. Simply create a class in your application that looks like:
+
+  class Settings < Settingslogic
+    source "#{Rails.root}/config/application.yml"
+    namespace Rails.env
+  end
+
+Name it Settings, name it Config, name it whatever you want. Add as many or as few as you like. A good place to put this file in a rails app is models/settings.rb
+
+I felt adding a settings file in your app was more straightforward, less tricky, and more flexible.
+
+== 2. Create your settings
+
+Notice above we specified an absolute path to our settings file called "application.yml". This is just a typical YAML file. Also notice above that we specified a namespace for our environment. This allows us to namespace our configuration depending on our environment:
 
   # app/config/application.yml
   defaults: &defaults
@@ -45,12 +58,10 @@ By default Settingslogic tries to load config/application.yml. This is just a ty
   production:
     <<: *defaults
 
-Take note of the environment namespacing. If your framework supports environments this is a good way to support environment specific settings. If you are using this in an area where there are no environment disregard the namespacing. It will work just fine without it.
-
 == Access your settings
 
-  >> RAILS_ENV
-  => "development"
+  >> Rails.env.development?
+  => true
   
   >> Settings.cool
   => "#<Settingslogic::Settings ... >"
@@ -63,25 +74,6 @@ Take note of the environment namespacing. If your framework supports environment
   
   >> Settings.awesome_setting
   => "Did you know 5 + 5 = 10?"
-
-== Multiple settings
-
-  settings1 = Settings.new(:settings1) # looks for config/settings1.yml
-  settings2 = Settings.new("settings2.yaml") # looks for settings2.yml
-  settings2 = Settings.new("/abs/path/settings2.yaml") # looks for /abs/path/settings2.yml
-  settings3 = Settings.new(:some_setting => "some value")
-
-== Configure
-
-Configuration is optional. See Settingslogic::Config for more details.
-
-  # config/initializers/settingslogic.rb
-  Settingslogic::Config.configure do |config|
-    config.file_name = :config # will look for config/config.yml
-    config.file_name = "config" # will look for config
-    config.file_name = "config.yaml" # will look for confg.yaml
-    config.file_name = "/absolute/path/config.yml" # will look for /absolute/path/config.yml
-  end
 
 
 Copyright (c) 2008 {Ben Johnson}[http://github.com/binarylogic] of {Binary Logic}[http://www.binarylogic.com], released under the MIT license 
