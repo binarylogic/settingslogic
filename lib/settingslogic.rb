@@ -50,8 +50,9 @@ class Settingslogic < Hash
     when Hash
       self.update hash_or_file
     else
-      self.update YAML.load(ERB.new(File.read(hash_or_file)).result).to_hash
-      self.update self[self.class.namespace] if self.class.namespace
+      hash = YAML.load(ERB.new(File.read(hash_or_file)).result).to_hash
+      hash = hash[self.class.namespace] if self.class.namespace
+      self.update hash
     end
     
     define_settings!
