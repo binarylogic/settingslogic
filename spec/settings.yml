@@ -1,5 +1,9 @@
 setting1:
   setting1_child: saweet
+  deep:
+    another: my value
+    child:
+      value: 2
 
 setting2: 5
 setting3: <%= 5 * 5 %>

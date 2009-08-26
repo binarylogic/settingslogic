@@ -6,11 +6,19 @@ describe "Settingslogic" do
   end
   
   it "should access settings" do
-    Settings.setting1.should == {"setting1_child" => "saweet"}
+    Settings.setting2.should == 5
   end
   
   it "should access nested settings" do
     Settings.setting1.setting1_child.should == "saweet"
+  end
+  
+  it "should access deep nested settings" do
+    Settings.setting1.deep.another.should == "my value"
+  end
+  
+  it "should access extra deep nested settings" do
+    Settings.setting1.deep.child.value.should == 2
   end
   
   it "should enable erb" do
