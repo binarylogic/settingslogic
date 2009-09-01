@@ -28,4 +28,9 @@ describe "Settingslogic" do
   it "should namespace settings" do
     Settings2.setting1_child.should == "saweet"
   end
+
+  it "should distinguish nested keys" do
+    Settings.a.b.d.should == 'blah'
+    Settings.a.c.d.should == 'hah'
+  end
 end

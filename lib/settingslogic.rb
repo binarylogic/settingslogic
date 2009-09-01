@@ -53,15 +53,29 @@ class Settingslogic < Hash
       self.update hash
     end
   end
+
+  def singleton(obj)
+    class << obj; self; end
+  end
   
   private
     def method_missing(name, *args, &block)
       if key?(name.to_s)
-        value = self[name.to_s].is_a?(Hash) ? self.class.new(self[name.to_s]) : self[name.to_s]
-        self.class.send(:define_method, name) { value }
-        send(name)
+        find_and_define name
       else
         super
+      end
+    end
+
+    def find_and_define(name)
+      node_or_value = self[name.to_s]
+      unless node_or_value.is_a? Hash
+        singleton(self).send(:define_method, name) { node_or_value }
+        node_or_value
+      else
+        node = self.class.new self[name.to_s]
+        singleton(self).send(:define_method, name) { node }
+        node
       end
     end
 end
