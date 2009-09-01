@@ -68,14 +68,15 @@ class Settingslogic < Hash
     end
 
     def find_and_define(name)
-      node_or_value = self[name.to_s]
-      unless node_or_value.is_a? Hash
-        singleton(self).send(:define_method, name) { node_or_value }
-        node_or_value
-      else
+      if self[name.to_s].is_a? Hash
         node = self.class.new self[name.to_s]
         singleton(self).send(:define_method, name) { node }
         node
+      else
+        value = self[name.to_s]
+        singleton(self).send(:define_method, name) { value }
+        value
       end
     end
+
 end
