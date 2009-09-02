@@ -54,12 +54,12 @@ class Settingslogic < Hash
     end
   end
   
-  module EigenMethodDefiner
+  module EigenMethodDefiner # :nodoc:
     def method_missing(name, *args, &block)
       if key?(name.to_s)
-        define_eigen_method name.to_s
+        define_eigen_method(name.to_s)
         value = self[name.to_s]
-        value.extend EigenMethodDefiner if value.is_a? Hash
+        value.extend(EigenMethodDefiner) if value.is_a?(Hash)
         value
       else
         super
