@@ -8,9 +8,9 @@ setting1:
 setting2: 5
 setting3: <%= 5 * 5 %>
 name: test
-a:
-  b:
-    d: blah
-  c:
-    d: hah
 
+language:
+  haskell:
+    paradigm: functional
+  smalltalk:
+    paradigm: object oriented 

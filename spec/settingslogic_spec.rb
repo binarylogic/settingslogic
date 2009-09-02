@@ -30,7 +30,7 @@ describe "Settingslogic" do
   end
 
   it "should distinguish nested keys" do
-    Settings.a.b.d.should == 'blah'
-    Settings.a.c.d.should == 'hah'
+    Settings.language.haskell.paradigm.should == 'functional'
+    Settings.language.smalltalk.paradigm.should == 'object oriented'
   end
 end
