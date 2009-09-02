@@ -54,35 +54,25 @@ class Settingslogic < Hash
     end
   end
   
-  module NodeDefinder
-
-    def singleton(obj)
-      class << obj; self; end
-    end
-
-    private
-
+  module EigenMethodDefiner
     def method_missing(name, *args, &block)
       if key?(name.to_s)
-        define_method_for_node_or_leaf name
+        define_eigen_method name.to_s
+        value = self[name.to_s]
+        value.extend EigenMethodDefiner if value.is_a? Hash
+        value
       else
         super
       end
     end
 
-    def define_method_for_node_or_leaf(name)
-      if self[name.to_s].is_a? Hash
-        node = self[name.to_s]
-        node.extend NodeDefinder
-        singleton(self).send(:define_method, name) { node }
-        node
-      else
-        leaf = self[name.to_s]
-        singleton(self).send(:define_method, name) { leaf }
-        leaf
+    private
+
+      def define_eigen_method(name)
+        eigen_class = class << self; self; end
+        eigen_class.send(:define_method, name) { self[name] }
       end
-    end
   end
 
-  include NodeDefinder
+  include EigenMethodDefiner
 end
