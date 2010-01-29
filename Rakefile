@@ -11,7 +11,6 @@ begin
     gem.authors = ["Ben Johnson of Binary Logic"]
     gem.rubyforge_project = "settingslogic"
   end
-  Jeweler::RubyforgeTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
