@@ -1,6 +1,7 @@
 = Settingslogic
 
-Settingslogic is a simple configuration / settings solution that uses an ERB enabled YAML file. It has been great for my apps, maybe you will enjoy it too.
+Settingslogic is a simple configuration / settings solution that uses an ERB enabled YAML file. It has been great for
+our apps, maybe you will enjoy it too.  Settingslogic works with Rails, Sinatra, or any Ruby project.
 
 So here is my question to you.....is Settingslogic a great settings solution or the greatest?
 
@@ -10,43 +11,47 @@ So here is my question to you.....is Settingslogic a great settings solution or 
 *	<b>Repository:</b> http://github.com/binarylogic/settingslogic/tree/master
 * <b>Issues:</b> http://github.com/binarylogic/settingslogic/issues
 
-== Install and use
+== Installation
 
-Install from rubyforge:
+Install from rubyforge/gemcutter:
 
   sudo gem install settingslogic
 
-Install from github:
-
-  sudo gem install binarylogic-settingslogic
-
-Or as a plugin
+Or as a Rails plugin:
 
   script/plugin install git://github.com/binarylogic/settingslogic.git
 
-== 1. Define your constant
+Settingslogic does not have any dependencies on Rails.  Installing as a gem is recommended.
 
-Instead of defining a Settings constant for you, that task is left to you. Simply create a class in your application that looks like:
+== Usage
+
+=== 1. Define your class
+
+Instead of defining a Settings constant for you, that task is left to you. Simply create a class in your application
+that looks like:
 
   class Settings < Settingslogic
     source "#{Rails.root}/config/application.yml"
     namespace Rails.env
   end
 
-Name it Settings, name it Config, name it whatever you want. Add as many or as few as you like. A good place to put this file in a rails app is models/settings.rb
+Name it Settings, name it Config, name it whatever you want. Add as many or as few as you like. A good place to put
+this file in a rails app is app/models/settings.rb
 
 I felt adding a settings file in your app was more straightforward, less tricky, and more flexible.
 
-== 2. Create your settings
+=== 2. Create your settings
 
-Notice above we specified an absolute path to our settings file called "application.yml". This is just a typical YAML file. Also notice above that we specified a namespace for our environment. This allows us to namespace our configuration depending on our environment:
+Notice above we specified an absolute path to our settings file called "application.yml". This is just a typical YAML file.
+Also notice above that we specified a namespace for our environment.  A namespace is just a string that corresponds to a key
+in the YAML file.  By using Rails.env, this allows us to namespace our configuration depending on our environment:
 
   # app/config/application.yml
   defaults: &defaults
     cool:
       saweet: nested settings
     neat_setting: 24
-    awesome_setting: <%= "Did you know 5 + 5 = " + (5 + 5) + "?" %>
+    awesome_setting: <%= "Did you know 5 + 5 = #{5 + 5}?" %>
   
   development:
     <<: *defaults
@@ -58,11 +63,11 @@ Notice above we specified an absolute path to our settings file called "applicat
   production:
     <<: *defaults
 
-== Access your settings
+=== 3. Access your settings
 
-  >> Rails.env.development?
-  => true
-  
+  >> Rails.env
+  => "development"
+
   >> Settings.cool
   => "#<Settingslogic::Settings ... >"
   
@@ -75,5 +80,48 @@ Notice above we specified an absolute path to our settings file called "applicat
   >> Settings.awesome_setting
   => "Did you know 5 + 5 = 10?"
 
+=== 4. Optional / dynamic settings
 
-Copyright (c) 2008 {Ben Johnson}[http://github.com/binarylogic] of {Binary Logic}[http://www.binarylogic.com], released under the MIT license 
+Often, you will want to handle defaults in your application logic itself, to reduce the number of settings
+you need to put in your YAML file.  You can access an optional setting by using Hash notation:
+
+  >> Settings.messaging.queue_name
+  => Exception: Missing setting 'queue_name' in 'message' section in 'application.yml'
+
+  >> Settings.messaging['queue_name']
+  => nil
+
+  >> Settings.messaging['queue_name'] ||= 'user_mail'
+  => "user_mail"
+
+  >> Settings.messaging.queue_name
+  => "user_mail"
+
+== Note on Sinatra / Capistrano / Vlad
+
+Each of these uses a +set+ convention which actually defines methods in the global Object namespace:
+
+  set :application, "myapp"  # does "def application" globally
+
+This can cause collisions with Settingslogic, since this settings approach makes them global.
+Luckily, the solution is to just add a call to load! in your class:
+ 
+  class Settings < Settingslogic
+    source "#{Rails.root}/config/application.yml"
+    namespace Rails.env
+    load!
+  end
+
+Truthfully, it's always safest to add load! to your class, since this guarantees settings will be
+loaded at that time, rather than lazily later via method_missing.
+
+Finally, you can reload all your settings dynamically as well:
+
+  Settings.reload!
+
+This is useful if you want to support changing your settings YAML without restarting your app.
+
+== Author
+
+Copyright (c) 2008-2010 {Ben Johnson}[http://github.com/binarylogic] of {Binary Logic}[http://www.binarylogic.com],
+released under the MIT license.  Support for optional settings and avoiding collisions by {Nate Wiger}[http://nate.wiger.org].
