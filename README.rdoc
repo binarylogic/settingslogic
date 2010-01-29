@@ -85,7 +85,7 @@ Using a namespace allows us to change our configuration depending on our environ
 You can use these settings anywhere, for example in a model:  
 
   class Post < ActiveRecord::Base
-    self.per_page = Settings.pagination.posts_per_page || 10
+    self.per_page = Settings.pagination.posts_per_page
   end
 
 === 4. Optional / dynamic settings
@@ -105,10 +105,10 @@ you need to put in your YAML file.  You can access an optional setting by using 
   >> Settings.messaging.queue_name
   => "user_mail"
 
-Or, modifying our model example:
+Modifying our model example:
 
   class Post < ActiveRecord::Base
-    self.per_page = Settings.pagination['posts_per_page'] || Settings.pagination.per_page
+    self.per_page = Settings.posts['per_page'] || Settings.pagination.per_page
   end
   
 This would allow you to specify a custom value for per_page just for posts, or
