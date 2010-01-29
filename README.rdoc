@@ -43,8 +43,10 @@ I felt adding a settings file in your app was more straightforward, less tricky,
 === 2. Create your settings
 
 Notice above we specified an absolute path to our settings file called "application.yml". This is just a typical YAML file.
-Also notice above that we specified a namespace for our environment.  A namespace is just a string that corresponds to a key
-in the YAML file.  By using Rails.env, this allows us to namespace our configuration depending on our environment:
+Also notice above that we specified a namespace for our environment.  A namespace is just an optional string that corresponds
+to a key in the YAML file.
+
+Using a namespace allows us to change our configuration depending on our environment:
 
   # app/config/application.yml
   defaults: &defaults
@@ -80,6 +82,12 @@ in the YAML file.  By using Rails.env, this allows us to namespace our configura
   >> Settings.awesome_setting
   => "Did you know 5 + 5 = 10?"
 
+You can use these settings anywhere, for example in a model:  
+
+  class Post < ActiveRecord::Base
+    self.per_page = Settings.pagination.posts_per_page || 10
+  end
+
 === 4. Optional / dynamic settings
 
 Often, you will want to handle defaults in your application logic itself, to reduce the number of settings
@@ -97,14 +105,24 @@ you need to put in your YAML file.  You can access an optional setting by using 
   >> Settings.messaging.queue_name
   => "user_mail"
 
+Or, modifying our model example:
+
+  class Post < ActiveRecord::Base
+    self.per_page = Settings.pagination['posts_per_page'] || Settings.pagination.per_page
+  end
+  
+This would allow you to specify a custom value for per_page just for posts, or
+to fall back to your default value if not specified.
+
 == Note on Sinatra / Capistrano / Vlad
 
-Each of these uses a +set+ convention which actually defines methods in the global Object namespace:
+Each of these frameworks uses a +set+ convention for settings, which actually defines methods
+in the global Object namespace:
 
   set :application, "myapp"  # does "def application" globally
 
-This can cause collisions with Settingslogic, since this settings approach makes them global.
-Luckily, the solution is to just add a call to load! in your class:
+This can cause collisions with Settingslogic, since those methods are global. Luckily, the
+solution is to just add a call to load! in your class:
  
   class Settings < Settingslogic
     source "#{Rails.root}/config/application.yml"
@@ -112,10 +130,10 @@ Luckily, the solution is to just add a call to load! in your class:
     load!
   end
 
-Truthfully, it's always safest to add load! to your class, since this guarantees settings will be
+It's probably always safest to add load! to your class, since this guarantees settings will be
 loaded at that time, rather than lazily later via method_missing.
 
-Finally, you can reload all your settings dynamically as well:
+Finally, you can reload all your settings later as well:
 
   Settings.reload!
 
@@ -124,4 +142,4 @@ This is useful if you want to support changing your settings YAML without restar
 == Author
 
 Copyright (c) 2008-2010 {Ben Johnson}[http://github.com/binarylogic] of {Binary Logic}[http://www.binarylogic.com],
-released under the MIT license.  Support for optional settings and avoiding collisions by {Nate Wiger}[http://nate.wiger.org].
+released under the MIT license.  Support for optional settings and reloading by {Nate Wiger}[http://nate.wiger.org].
