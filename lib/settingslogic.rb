@@ -84,7 +84,7 @@ class Settingslogic < Hash
   def method_missing(key, *args, &block)
     begin
       value = fetch(key.to_s)
-    rescue KeyError
+    rescue IndexError
       raise MissingSetting, "Missing setting '#{key}' in #{@section}"
     end
     value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
