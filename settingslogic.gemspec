@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{settingslogic}
-  s.version = "2.0.4"
+  s.version = "2.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ben Johnson of Binary Logic"]
-  s.date = %q{2010-01-29}
+  s.date = %q{2010-02-01}
   s.email = %q{bjohnson@binarylogic.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -36,7 +36,6 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/binarylogic/settingslogic}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubyforge_project = %q{settingslogic}
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{A simple and straightforward settings solution that uses an ERB enabled YAML file and a singleton design pattern.}
   s.test_files = [
