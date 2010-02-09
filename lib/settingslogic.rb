@@ -10,6 +10,16 @@ class Settingslogic < Hash
       instance.key?("name") ? instance.name : super
     end
     
+    # Enables Settings.get('nested.key.name') for dynamic access
+    def get(key)
+      parts = key.split('.')
+      curs = self
+      while p = parts.shift
+        curs = curs.send(p)
+      end
+      curs
+    end
+
     def source(value = nil)
       if value.nil?
         @source
@@ -27,13 +37,15 @@ class Settingslogic < Hash
     end
     
     def [](key)
-      # Setting.key.value or Setting[:key][:value] or Setting['key']['value']
-      fetch(key.to_s,nil)
+      # Setting[:key][:key2] or Setting['key']['key2']
+      instance.fetch(key.to_s, nil)
     end
 
-    def []=(key,val)
-      # Setting[:key] = 'value' for dynamic settings
-      store(key.to_s,val)
+    def []=(key, val)
+      # Setting[:key][:key2] = 'value' for dynamic settings
+      val = self.class.new(val, source) if val.is_a? Hash
+      instance.store(key.to_s, val)
+      instance.create_accessor_for(key.to_s, val)
     end
     
     def load!
@@ -75,19 +87,30 @@ class Settingslogic < Hash
       hash = hash[self.class.namespace] if self.class.namespace
       self.replace hash
     end
-    @section = section || hash_or_file  # so end of error says "in application.yml"
+    @section = section || self.class.source  # so end of error says "in application.yml"
     create_accessors!
   end
 
   # Called for dynamically-defined keys, and also the first key deferenced at the top-level, if load! is not used.
   # Otherwise, create_accessors! (called by new) will have created actual methods for each key.
-  def method_missing(key, *args, &block)
-    begin
-      value = fetch(key.to_s)
-    rescue IndexError
-      raise MissingSetting, "Missing setting '#{key}' in #{@section}"
-    end
+  def method_missing(name, *args, &block)
+    key = name.to_s
+    raise MissingSetting, "Missing setting '#{key}' in #{@section}" unless has_key? key
+    value = fetch(key)
+    create_accessor_for(key)
     value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
+  end
+
+  def [](key)
+    # Setting[:key][:key2] or Setting['key']['key2']
+    fetch(key.to_s, nil)
+  end
+
+  def []=(key,val)
+    # Setting[:key][:key2] = 'value' for dynamic settings
+    val = self.class.new(val, @section) if val.is_a? Hash
+    store(key.to_s, val)
+    create_accessor_for(key.to_s, val)
   end
 
   private
@@ -97,17 +120,24 @@ class Settingslogic < Hash
     # rather than the app_yml['deploy_to'] hash.  Jeezus.
     def create_accessors!
       self.each do |key,val|
-        # Use instance_eval/class_eval because they're actually more efficient than define_method{}
-        # http://stackoverflow.com/questions/185947/ruby-definemethod-vs-def
-        # http://bmorearty.wordpress.com/2009/01/09/fun-with-rubys-instance_eval-and-class_eval/
-        self.class.class_eval <<-EndEval
-          def #{key}
-            return @#{key} if @#{key}  # cache (performance)
-            value = fetch('#{key}')
-            @#{key} = value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
-          end
-        EndEval
+        create_accessor_for(key)
       end
+    end
+
+    # Use instance_eval/class_eval because they're actually more efficient than define_method{}
+    # http://stackoverflow.com/questions/185947/ruby-definemethod-vs-def
+    # http://bmorearty.wordpress.com/2009/01/09/fun-with-rubys-instance_eval-and-class_eval/
+    def create_accessor_for(key, val=nil)
+      return unless key.to_s =~ /^\w+$/  # could have "some-setting:" which blows up class_eval
+      instance_variable_set("@#{key}", val)
+      self.class.class_eval <<-EndEval
+        def #{key}
+          return @#{key} if @#{key}
+          raise MissingSetting, "Missing setting '#{key}' in #{@section}" unless has_key? '#{key}'
+          value = fetch('#{key}')
+          @#{key} = value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
+        end
+      EndEval
     end
 
 end

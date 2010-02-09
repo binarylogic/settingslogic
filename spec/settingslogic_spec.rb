@@ -49,7 +49,7 @@ describe "Settingslogic" do
     end
     e.should_not be_nil
     e.message.should =~ /Missing setting 'missing' in/
-    
+
     e = nil
     begin
       Settings.language.missing
@@ -71,7 +71,7 @@ describe "Settingslogic" do
     e.message.should =~ /Missing setting 'erlang' in 'language' section/
     
     Settings.language['erlang'].should be_nil
-    Settings.language['erlang'] ||= 5
+    Settings.language['erlang'] = 5
     Settings.language['erlang'].should == 5
 
     Settings.language['erlang'] = {'paradigm' => 'functional'}
@@ -79,6 +79,24 @@ describe "Settingslogic" do
 
     Settings.reload!
     Settings.language['erlang'].should be_nil
+
+    Settings.language[:erlang] ||= 5
+    Settings.language[:erlang].should == 5
+
+    Settings.language[:erlang] = {}
+    Settings.language[:erlang][:paradigm] = 'functional'
+    Settings.language.erlang.paradigm.should == 'functional'
+  end
+
+  it "should handle badly-named settings" do
+    Settings.language['some-dash-setting#'] = 'dashtastic'
+    Settings.language['some-dash-setting#'].should == 'dashtastic'
+  end
+
+  it "should be able to get() a key with dot.notation" do
+    Settings.get('setting1.setting1_child').should == "saweet"
+    Settings.get('setting1.deep.another').should == "my value"
+    Settings.get('setting1.deep.child.value').should == 2
   end
 
   # Put this test last or else call to .instance will load @instance,

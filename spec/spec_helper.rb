@@ -11,7 +11,7 @@ require 'settings3'
 
 # Needed to test Settings3
 def collides
-  'collision'
+  @collides = 'collision'
 end
 
 Spec::Runner.configure do |config|
