@@ -73,10 +73,15 @@ class Settingslogic < Hash
       # of the singleton pattern.  Basically this proxies Setting.foo to Setting.instance.foo
       def create_accessors!
         instance.each do |key,val|
-          next unless key.to_s =~ /^\w+$/  # could have "some-setting:" which blows up eval
-          instance_eval "def #{key}; instance.send(:#{key}); end"
+          create_accessor_for(key)
         end
       end
+
+      def create_accessor_for(key)
+        return unless key.to_s =~ /^\w+$/  # could have "some-setting:" which blows up eval
+        instance_eval "def #{key}; instance.send(:#{key}); end"
+      end
+
   end
 
   # Initializes a new settings object. You can initialize an object in any of the following ways:

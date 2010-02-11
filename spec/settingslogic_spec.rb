@@ -91,7 +91,20 @@ describe "Settingslogic" do
     Settings.language[:erlang] = {}
     Settings.language[:erlang][:paradigm] = 'functional'
     Settings.language.erlang.paradigm.should == 'functional'
+
+    Settings[:toplevel] = '42'
+    Settings.toplevel.should == '42'
   end
+
+  # This one edge case currently does not pass, because it requires very
+  # esoteric code in order to make it pass.  It was judged not worth fixing,
+  # as it introduces significant complexity for minor gain.
+  # it "should handle reloading top-level settings"
+  #   Settings[:inspect] = 'yeah baby'
+  #   Settings.inspect.should == 'yeah baby'
+  #   Settings.reload!
+  #   Settings.inspect.should == 'Settings'
+  # end
 
   it "should handle oddly-named settings" do
     Settings.language['some-dash-setting#'] = 'dashtastic'
