@@ -17,3 +17,6 @@ language:
 
 collides:
   does: not
+nested:
+  collides:
+    does: not either

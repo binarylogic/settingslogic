@@ -47,7 +47,7 @@ class Settingslogic < Hash
       instance.store(key.to_s, val)
       instance.create_accessor_for(key.to_s, val)
     end
-    
+
     def load!
       instance
       true
@@ -79,6 +79,7 @@ class Settingslogic < Hash
   # if you are using this in rails. If you pass a string it should be an absolute path to your settings file.
   # Then you can pass a hash, and it just allows you to access the hash via methods.
   def initialize(hash_or_file = self.class.source, section = nil)
+    #puts "new! #{hash_or_file}"
     case hash_or_file
     when Hash
       self.replace hash_or_file
@@ -120,6 +121,7 @@ class Settingslogic < Hash
     # rather than the app_yml['deploy_to'] hash.  Jeezus.
     def create_accessors!
       self.each do |key,val|
+        #puts "accessor_for: #{key}"
         create_accessor_for(key)
       end
     end
@@ -132,6 +134,7 @@ class Settingslogic < Hash
       instance_variable_set("@#{key}", val)
       self.class.class_eval <<-EndEval
         def #{key}
+          #puts 'class_eval: #{key}'
           return @#{key} if @#{key}
           raise MissingSetting, "Missing setting '#{key}' in #{@section}" unless has_key? '#{key}'
           value = fetch('#{key}')

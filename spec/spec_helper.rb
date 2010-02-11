@@ -10,8 +10,8 @@ require 'settings2'
 require 'settings3'
 
 # Needed to test Settings3
-def collides
-  @collides = 'collision'
+Object.send :define_method, 'collides' do
+  'collision'
 end
 
 Spec::Runner.configure do |config|

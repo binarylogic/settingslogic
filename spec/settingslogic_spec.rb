@@ -20,7 +20,7 @@ describe "Settingslogic" do
   it "should enable erb" do
     Settings.setting3.should == 25
   end
-  
+
   it "should namespace settings" do
     Settings2.setting1_child.should == "saweet"
     Settings2.deep.another.should == "my value"
@@ -37,6 +37,7 @@ describe "Settingslogic" do
   end
   
   it "should not collide with global methods" do
+    Settings3.nested.collides.does.should == 'not either'
     Settings3.collides.does.should == 'not'
   end
   
@@ -88,9 +89,14 @@ describe "Settingslogic" do
     Settings.language.erlang.paradigm.should == 'functional'
   end
 
-  it "should handle badly-named settings" do
+  it "should handle oddly-named settings" do
     Settings.language['some-dash-setting#'] = 'dashtastic'
     Settings.language['some-dash-setting#'].should == 'dashtastic'
+  end
+
+  it "should support instance usage as well" do
+    settings = SettingsInst.new(Settings.source)
+    settings.setting1.setting1_child.should == "saweet"
   end
 
   it "should be able to get() a key with dot.notation" do
