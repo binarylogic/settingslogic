@@ -38,9 +38,12 @@ describe "Settingslogic" do
   
   it "should not collide with global methods" do
     Settings3.nested.collides.does.should == 'not either'
+    Settings3[:nested] = 'fooey'
+    Settings3[:nested].should == 'fooey'
+    Settings3.nested.should == 'fooey'
     Settings3.collides.does.should == 'not'
   end
-  
+
   it "should raise a helpful error message" do
     e = nil
     begin
@@ -77,6 +80,7 @@ describe "Settingslogic" do
 
     Settings.language['erlang'] = {'paradigm' => 'functional'}
     Settings.language.erlang.paradigm.should == 'functional'
+    Settings.respond_to?('erlang').should be_false
 
     Settings.reload!
     Settings.language['erlang'].should be_nil

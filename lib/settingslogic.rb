@@ -4,7 +4,7 @@ require "erb"
 # A simple settings solution using a YAML file. See README for more information.
 class Settingslogic < Hash
   class MissingSetting < StandardError; end
-  
+
   class << self
     def name # :nodoc:
       instance.key?("name") ? instance.name : super
@@ -37,15 +37,14 @@ class Settingslogic < Hash
     end
     
     def [](key)
-      # Setting[:key][:key2] or Setting['key']['key2']
       instance.fetch(key.to_s, nil)
     end
 
     def []=(key, val)
       # Setting[:key][:key2] = 'value' for dynamic settings
-      val = self.class.new(val, source) if val.is_a? Hash
+      val = new(val, source) if val.is_a? Hash
       instance.store(key.to_s, val)
-      instance.create_accessor_for(key.to_s, val)
+      instance.create_accessor_for(key, val)
     end
 
     def load!
@@ -60,11 +59,23 @@ class Settingslogic < Hash
     
     private
       def instance
-        @instance ||= new
+        return @instance if @instance
+        @instance = new
+        create_accessors!
+        @instance
       end
       
       def method_missing(name, *args, &block)
         instance.send(name, *args, &block)
+      end
+
+      # It would be great to DRY this up somehow, someday, but it's difficult because
+      # of the singleton pattern.  Basically this proxies Setting.foo to Setting.instance.foo
+      def create_accessors!
+        instance.each do |key,val|
+          next unless key.to_s =~ /^\w+$/  # could have "some-setting:" which blows up eval
+          instance_eval "def #{key}; instance.send(:#{key}); end"
+        end
       end
   end
 
@@ -103,7 +114,6 @@ class Settingslogic < Hash
   end
 
   def [](key)
-    # Setting[:key][:key2] or Setting['key']['key2']
     fetch(key.to_s, nil)
   end
 
@@ -111,36 +121,32 @@ class Settingslogic < Hash
     # Setting[:key][:key2] = 'value' for dynamic settings
     val = self.class.new(val, @section) if val.is_a? Hash
     store(key.to_s, val)
-    create_accessor_for(key.to_s, val)
+    create_accessor_for(key, val)
   end
 
-  private
-    # This handles naming collisions with Sinatra/Vlad/Capistrano. Since these use a set()
-    # helper that defines methods in Object, ANY method_missing ANYWHERE picks up the Vlad/Sinatra
-    # settings!  So settings.deploy_to title actually calls Object.deploy_to (from set :deploy_to, "host"),
-    # rather than the app_yml['deploy_to'] hash.  Jeezus.
-    def create_accessors!
-      self.each do |key,val|
-        #puts "accessor_for: #{key}"
-        create_accessor_for(key)
+  # This handles naming collisions with Sinatra/Vlad/Capistrano. Since these use a set()
+  # helper that defines methods in Object, ANY method_missing ANYWHERE picks up the Vlad/Sinatra
+  # settings!  So settings.deploy_to title actually calls Object.deploy_to (from set :deploy_to, "host"),
+  # rather than the app_yml['deploy_to'] hash.  Jeezus.
+  def create_accessors!
+    self.each do |key,val|
+      create_accessor_for(key)
+    end
+  end
+
+  # Use instance_eval/class_eval because they're actually more efficient than define_method{}
+  # http://stackoverflow.com/questions/185947/ruby-definemethod-vs-def
+  # http://bmorearty.wordpress.com/2009/01/09/fun-with-rubys-instance_eval-and-class_eval/
+  def create_accessor_for(key, val=nil)
+    return unless key.to_s =~ /^\w+$/  # could have "some-setting:" which blows up eval
+    instance_variable_set("@#{key}", val) if val
+    self.class.class_eval <<-EndEval
+      def #{key}
+        return @#{key} if @#{key}
+        raise MissingSetting, "Missing setting '#{key}' in #{@section}" unless has_key? '#{key}'
+        value = fetch('#{key}')
+        @#{key} = value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
       end
-    end
-
-    # Use instance_eval/class_eval because they're actually more efficient than define_method{}
-    # http://stackoverflow.com/questions/185947/ruby-definemethod-vs-def
-    # http://bmorearty.wordpress.com/2009/01/09/fun-with-rubys-instance_eval-and-class_eval/
-    def create_accessor_for(key, val=nil)
-      return unless key.to_s =~ /^\w+$/  # could have "some-setting:" which blows up class_eval
-      instance_variable_set("@#{key}", val)
-      self.class.class_eval <<-EndEval
-        def #{key}
-          #puts 'class_eval: #{key}'
-          return @#{key} if @#{key}
-          raise MissingSetting, "Missing setting '#{key}' in #{@section}" unless has_key? '#{key}'
-          value = fetch('#{key}')
-          @#{key} = value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
-        end
-      EndEval
-    end
-
+    EndEval
+  end
 end
