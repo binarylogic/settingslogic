@@ -96,6 +96,17 @@ describe "Settingslogic" do
     Settings.toplevel.should == '42'
   end
 
+  it "should raise an error on a nil source argument" do
+    class NoSource < Settingslogic; end
+    e = nil
+    begin
+      NoSource.foo.bar
+    rescue => e
+      e.should be_kind_of Errno::ENOENT
+    end
+    e.should_not be_nil
+  end
+
   # This one edge case currently does not pass, because it requires very
   # esoteric code in order to make it pass.  It was judged not worth fixing,
   # as it introduces significant complexity for minor gain.

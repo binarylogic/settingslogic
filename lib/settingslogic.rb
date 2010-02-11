@@ -9,7 +9,7 @@ class Settingslogic < Hash
     def name # :nodoc:
       instance.key?("name") ? instance.name : super
     end
-    
+
     # Enables Settings.get('nested.key.name') for dynamic access
     def get(key)
       parts = key.split('.')
@@ -97,6 +97,8 @@ class Settingslogic < Hash
   def initialize(hash_or_file = self.class.source, section = nil)
     #puts "new! #{hash_or_file}"
     case hash_or_file
+    when nil
+      raise Errno::ENOENT, "No file specified as Settingslogic source"
     when Hash
       self.replace hash_or_file
     else
