@@ -28,6 +28,14 @@ class Settingslogic < Hash
       end
     end
 
+    def default_namespace(value = nil)
+      if value.nil?
+        @default_namespace
+      else
+        @default_namespace = value
+      end
+    end
+
     def namespace(value = nil)
       if value.nil?
         @namespace
@@ -103,8 +111,8 @@ class Settingslogic < Hash
       self.replace hash_or_file
     else
       hash = YAML.load(ERB.new(File.read(hash_or_file)).result).to_hash
-      hash = hash[self.class.namespace] if self.class.namespace
-      self.replace hash
+      hashes = [self.class.default_namespace, self.class.namespace].compact.map { |k| hash[k] || {} }
+      self.replace( hashes.size == 2 ? hash_deep_merge(*hashes) : hashes.first || hash )
     end
     @section = section || self.class.source  # so end of error says "in application.yml"
     create_accessors!
@@ -156,4 +164,14 @@ class Settingslogic < Hash
       end
     EndEval
   end
+
+  # http://api.rubyonrails.org/classes/ActiveSupport/CoreExtensions/Hash/DeepMerge.html
+  def hash_deep_merge(hash, other_hash)
+    hash.merge(other_hash) do |key, oldval, newval|
+      oldval = oldval.to_hash if oldval.respond_to?(:to_hash)
+      newval = newval.to_hash if newval.respond_to?(:to_hash)
+      oldval.class.to_s == 'Hash' && newval.class.to_s == 'Hash' ? self.hash_deep_merge(oldval, newval) : newval
+    end
+  end
+
 end

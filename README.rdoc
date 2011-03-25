@@ -139,6 +139,59 @@ Finally, you can reload all your settings later as well:
 
 This is useful if you want to support changing your settings YAML without restarting your app.
 
+=== 5. Default namespace using
+
+Sometimes you want to have some defaults/common section in your settings file and inherit it for each namespace:
+
+  # app/config/application.yml
+  defaults:
+    cool:
+      saweet: nested settings
+    neat_setting: 24
+    awesome_setting: <%= "Did you know 5 + 5 = #{5 + 5}?" %>
+  
+  development:
+    neat_setting: 800
+
+  production:
+
+Just declare default_namespace in your model:
+
+  class Settings < Settingslogic
+    source "#{Rails.root}/config/application.yml"
+    namespace Rails.env
+    default_namespace "defaults"
+  end
+
+Access it
+
+  >> Rails.env
+  => "development"
+  >> Settings.cool.saweet
+  => "nested settings"
+  >> Settings.neat_setting
+  => 800
+
+  >> Rails.env
+  => "production"
+  >> Settings.cool.saweet
+  => "nested settings"
+  >> Settings.neat_setting
+  => 24
+
+  >> Rails.env
+  => "test"
+  >> Settings.cool.saweet
+  => "nested settings"
+  >> Settings.neat_setting
+  => 24
+
+Notes:
+
+* If specified namespace does not exist you will have default settings. So you don't need to write extra borring line if you have a lot of namespaces that just use default settings.
+* If specified default namespace does not exists you will have just settings for your namespace
+* If both (default_namespace and namespace) do not exist you will have all settings from file.
+
 == Author
 
 Copyright (c) 2008-2010 {Ben Johnson}[http://github.com/binarylogic] of {Binary Logic}[http://www.binarylogic.com],

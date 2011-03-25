@@ -1,0 +1,33 @@
+defaults:
+  binaries:
+    git: /usr/bin/git
+    mysql: /usr/bin/mysql
+  deep:
+    level: 0
+    h1:
+      level: 1
+      h2:
+        level: 2
+        type: rgb
+        colors:
+          - red
+          - green
+          - blue
+
+production:
+  binaries:
+    mysql: /usr/bin/mysql51
+
+test:
+  deep:
+    h1:
+      list:
+        - a
+        - b
+      h2:
+        type: cmyk
+        colors:
+          - cyan
+          - magenta
+          - yellow
+          - black

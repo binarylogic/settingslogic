@@ -138,4 +138,138 @@ describe "Settingslogic" do
   it "should be a hash" do
     Settings.send(:instance).should be_is_a(Hash)
   end
+
+  describe "without default_namespace and with namespace" do
+    it "should not merge settings from default_namespace" do
+      Settings4.instance_variable_set(:@default_namespace, nil)
+      Settings4.namespace('production')
+      Settings4.reload!
+
+      Settings4.to_hash.should == {
+        'binaries' => {
+          'mysql'     => "/usr/bin/mysql51",
+        }
+      }
+    end
+
+    it "should have empty settings if namespace does NOT exists" do
+      Settings4.instance_variable_set(:@default_namespace, nil)
+      Settings4.namespace('testing')
+      Settings4.reload!
+      Settings4.to_hash.should == { }
+    end
+  end
+
+  describe "with default_namespace and without namespace" do
+    it "should merge default_namespace and namespace settings" do
+      Settings4.default_namespace('defaults')
+      Settings4.instance_variable_set(:@namespace, nil)
+      Settings4.reload!
+
+      Settings4.to_hash.should == {
+        'binaries' => {
+          'git'       => "/usr/bin/git",
+          'mysql'     => "/usr/bin/mysql",
+        },
+        'deep'  => {
+          'level' => 0,
+          'h1' => {
+            'level' => 1,
+            'h2' => {
+              'level' => 2,
+              'type'  => 'rgb',
+              'colors' => %w(red green blue)
+            }
+          }
+        }
+      }
+    end
+
+    it "should have empty settings if defaults_namespace does NOT exists" do
+      Settings4.default_namespace('common')
+      Settings4.instance_variable_set(:@namespace, nil)
+      Settings4.reload!
+      Settings4.to_hash.should == { }
+    end
+  end
+
+  describe "with default_namespace and namespace" do
+    it "should merge default_namespace and namespace settings" do
+      Settings4.default_namespace('defaults')
+      Settings4.namespace('production')
+      Settings4.reload!
+
+      Settings4.to_hash.should == {
+        'binaries' => {
+          'git'       => "/usr/bin/git",
+          'mysql'     => "/usr/bin/mysql51",
+        },
+        'deep'  => {
+          'level' => 0,
+          'h1' => {
+            'level' => 1,
+            'h2' => {
+              'level' => 2,
+              'type'  => 'rgb',
+              'colors' => %w(red green blue)
+            }
+          }
+        }
+      }
+    end
+
+    it "should deep merge complex default_namespace and namespace settings" do
+      Settings4.default_namespace('defaults')
+      Settings4.namespace('test')
+      Settings4.reload!
+
+      Settings4.to_hash.should == {
+        'binaries' => {
+          'git'       => "/usr/bin/git",
+          'mysql'     => "/usr/bin/mysql",
+        },
+        'deep'  => {
+          'level' => 0,
+          'h1' => {
+            'list' => %w(a b),
+            'level' => 1,
+            'h2' => {
+              'level' => 2,
+              'type'  => 'cmyk',
+              'colors' => %w(cyan magenta yellow black)
+            }
+          }
+        }
+      }
+    end
+
+    it "should use custome namespace names" do
+      Settings4.default_namespace('production')
+      Settings4.namespace('test')
+      Settings4.reload!
+
+      Settings4.to_hash.should == {
+        'binaries' => {
+          'mysql'     => "/usr/bin/mysql51",
+        },
+        'deep'  => {
+          'h1' => {
+            'list' => %w(a b),
+            'h2' => {
+              'type'  => 'cmyk',
+              'colors' => %w(cyan magenta yellow black)
+            }
+          }
+        }
+      }
+    end
+
+    it "should have empty settings if defaults_namespace and namespace does NOT exist" do
+      Settings4.default_namespace('common')
+      Settings4.namespace('testing')
+      Settings4.reload!
+      Settings4.to_hash.should == { }
+    end
+  end
+
 end
