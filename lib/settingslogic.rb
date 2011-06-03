@@ -103,7 +103,9 @@ class Settingslogic < Hash
       self.replace hash_or_file
     else
       hash = YAML.load(ERB.new(File.read(hash_or_file)).result).to_hash
-      hash = hash[self.class.namespace] if self.class.namespace
+      if self.class.namespace
+        hash = hash[self.class.namespace] or raise MissingSetting, "Missing setting '#{self.class.namespace}' in #{hash_or_file}"
+      end
       self.replace hash
     end
     @section = section || self.class.source  # so end of error says "in application.yml"
