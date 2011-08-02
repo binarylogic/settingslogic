@@ -133,9 +133,26 @@ describe "Settingslogic" do
     Settings.get('setting1.deep.child.value').should == 2
   end
 
+  # If .name is not a property, delegate to superclass
+  it "should respond with Module.name" do
+    Settings2.name.should == "Settings2"
+  end
+
+  # If .name is called on Settingslogic itself, handle appropriately
+  # by delegating to Hash
+  it "should have the parent class always respond with Module.name" do
+    Settingslogic.name.should == 'Settingslogic'
+  end
+
+  # If .name is a property, respond with that instead of delegating to superclass
+  it "should allow a name setting to be overriden" do
+    Settings.name.should == 'test'
+  end
+
   # Put this test last or else call to .instance will load @instance,
   # masking bugs.
   it "should be a hash" do
     Settings.send(:instance).should be_is_a(Hash)
   end
+  
 end

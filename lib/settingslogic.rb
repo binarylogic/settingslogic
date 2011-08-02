@@ -7,7 +7,7 @@ class Settingslogic < Hash
 
   class << self
     def name # :nodoc:
-      instance.key?("name") ? instance.name : super
+      self.superclass != Hash && instance.key?("name") ? instance.name : super
     end
 
     # Enables Settings.get('nested.key.name') for dynamic access
