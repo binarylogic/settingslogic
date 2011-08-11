@@ -9,8 +9,8 @@ class Hash
     end
     self
   end
-  def deep_delete_blank
-    delete_if{|k, v| v.blank? or v.instance_of?(Hash) && v.deep_delete_blank.blank?}
+  def deep_delete_nil
+    delete_if{|k, v| v.nil? or v.instance_of?(Hash) && v.deep_delete_blank.empty?}
   end
 end
 
@@ -119,7 +119,7 @@ class Settingslogic < Hash
       hash = {}
       hash_or_file_or_array.each do |filename|
         #puts "loading from #{filename}"
-        hash.deep_merge!(load_into_hash(filename).deep_delete_blank)
+        hash.deep_merge!(load_into_hash(filename).deep_delete_nil)
       end
       self.replace hash
     else
