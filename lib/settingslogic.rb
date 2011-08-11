@@ -5,12 +5,12 @@ class Hash
   def deep_merge!(other_hash)
     other_hash.each_pair do |k,v|
       tv = self[k]
-      self[k] = tv.is_a?(Hash) && v.is_a?(Hash) ? tv.deep_merge(v) : v
+      self[k] = tv.is_a?(Hash) && v.is_a?(Hash) ? tv.deep_merge!(v) : v
     end
     self
   end
   def deep_delete_nil
-    delete_if{|k, v| v.nil? or v.instance_of?(Hash) && v.deep_delete_blank.empty?}
+    delete_if{|k, v| v.nil? or v.instance_of?(Hash) && v.deep_delete_nil.empty?}
   end
 end
 
@@ -35,7 +35,7 @@ class Settingslogic < Hash
 
     def source(*value)
       #puts "source! #{value}"
-      if value.blank?
+      if value.nil? || value.empty?
         @sources
       else
         @sources= value

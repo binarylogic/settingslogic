@@ -6,8 +6,13 @@ setting1:
       value: 2
 
 setting2: 5
+
 setting3: <%= 5 * 5 %>
 name: test
+
+going:
+  going: 
+    and: going
 
 language:
   haskell:

@@ -48,6 +48,10 @@ describe "Settingslogic" do
     Settings4.setting2.should == 10
   end
 
+  it "should override with local nested settings" do
+    Settings4.going.going.and.should == "gone"
+  end
+
   it "should raise a helpful error message" do
     e = nil
     begin
