@@ -1,6 +1,19 @@
 require "yaml"
 require "erb"
 
+class Hash
+  def deep_merge!(other_hash)
+    other_hash.each_pair do |k,v|
+      tv = self[k]
+      self[k] = tv.is_a?(Hash) && v.is_a?(Hash) ? tv.deep_merge(v) : v
+    end
+    self
+  end
+  def deep_delete_blank
+    delete_if{|k, v| v.blank? or v.instance_of?(Hash) && v.deep_delete_blank.blank?}
+  end
+end
+
 # A simple settings solution using a YAML file. See README for more information.
 class Settingslogic < Hash
   class MissingSetting < StandardError; end
@@ -22,7 +35,7 @@ class Settingslogic < Hash
 
     def source(*value)
       #puts "source! #{value}"
-      if value.nil? or value == []
+      if value.blank?
         @sources
       else
         @sources= value
@@ -106,7 +119,7 @@ class Settingslogic < Hash
       hash = {}
       hash_or_file_or_array.each do |filename|
         #puts "loading from #{filename}"
-        hash.merge!(load_into_hash(filename))
+        hash.deep_merge!(load_into_hash(filename).deep_delete_blank)
       end
       self.replace hash
     else
