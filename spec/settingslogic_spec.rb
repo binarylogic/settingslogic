@@ -44,6 +44,34 @@ describe "Settingslogic" do
     Settings3.collides.does.should == 'not'
   end
 
+  it "should override with local settings" do
+    Settings4.setting2.should == 10
+  end
+
+  it "should override with local nested settings" do
+    Settings4.going.going.and.should == "gone"
+  end   
+  
+  it "should not raise error for missing or invalid additional files" do
+    Settings4a.setting1.setting1_child.should == "saweet" 
+  end
+
+  it "should raise an error for a missing initial file" do
+    begin
+      Settings4b.setting1
+    rescue => e
+      e.should be_kind_of Settingslogic::InvalidSettingsFile
+    end
+  end
+
+  it "should raise an error for an invalid initial file" do
+    begin
+      Settings4c.setting1
+    rescue => e
+      e.should be_kind_of Settingslogic::InvalidSettingsFile
+    end
+  end
+
   it "should raise a helpful error message" do
     e = nil
     begin

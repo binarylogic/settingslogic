@@ -40,6 +40,13 @@ this file in a rails app is app/models/settings.rb
 
 I felt adding a settings file in your app was more straightforward, less tricky, and more flexible.
 
+If multiple files are passed on the source line, comma-separated, they will be loaded in order, with settings in later files overriding any existing keys.  This allows you to, for instance, maintain a global settings file in source control, while allowing each developer to override individual settings as needed.  Files that are specified but which do not exist will simply be ignored.  Thus you can safely do the following without requiring the presence of application_local.yml:  
+
+  class Settings < Settingslogic
+    source "#{Rails.root}/config/application.yml", "#{Rails.root}/config/application_local.yml"
+    namespace Rails.env
+  end
+
 === 2. Create your settings
 
 Notice above we specified an absolute path to our settings file called "application.yml". This is just a typical YAML file.

@@ -1,9 +1,23 @@
 require "yaml"
 require "erb"
 
+class Hash
+  def deep_merge!(other_hash)
+    other_hash.each_pair do |k,v|
+      tv = self[k]
+      self[k] = tv.is_a?(Hash) && v.is_a?(Hash) ? tv.deep_merge!(v) : v
+    end
+    self
+  end
+  def deep_delete_nil
+    delete_if{|k, v| v.nil? or v.instance_of?(Hash) && v.deep_delete_nil.empty?}
+  end
+end
+
 # A simple settings solution using a YAML file. See README for more information.
 class Settingslogic < Hash
-  class MissingSetting < StandardError; end
+  class MissingSetting < StandardError; end 
+  class InvalidSettingsFile < StandardError; end
 
   class << self
     def name # :nodoc:
@@ -20,11 +34,12 @@ class Settingslogic < Hash
       curs
     end
 
-    def source(value = nil)
-      if value.nil?
-        @source
+    def source(*value)
+      #puts "source! #{value}"
+      if value.nil? || value.empty?
+        @sources
       else
-        @source = value
+        @sources= value
       end
     end
 
@@ -94,22 +109,58 @@ class Settingslogic < Hash
   # Basically if you pass a symbol it will look for that file in the configs directory of your rails app,
   # if you are using this in rails. If you pass a string it should be an absolute path to your settings file.
   # Then you can pass a hash, and it just allows you to access the hash via methods.
-  def initialize(hash_or_file = self.class.source, section = nil)
-    #puts "new! #{hash_or_file}"
-    case hash_or_file
+  def initialize(hash_or_file_or_array = self.class.source, section = nil)
+    #puts "new! #{hash_or_file_or_array.inspect} (section: #{section})"
+    case hash_or_file_or_array
     when nil
       raise Errno::ENOENT, "No file specified as Settingslogic source"
     when Hash
-      self.replace hash_or_file
-    else
-      hash = YAML.load(ERB.new(File.read(hash_or_file)).result).to_hash
-      if self.class.namespace
-        hash = hash[self.class.namespace] or raise MissingSetting, "Missing setting '#{self.class.namespace}' in #{hash_or_file}"
+      self.replace hash_or_file_or_array
+    when Array
+      hash = {}                                            
+      ignore_load_error = false
+      hash_or_file_or_array.each_with_index do |filename, n|
+        #puts "loading from #{filename}"                    
+        ignore_load_error = (n!=0)
+        hash.deep_merge!(load_into_hash(filename, ignore_load_error).deep_delete_nil)
       end
+      self.replace hash
+    else
+      hash = load_into_hash(hash_or_file_or_array)
       self.replace hash
     end
     @section = section || self.class.source  # so end of error says "in application.yml"
+    if @section.is_a?(Array) 
+      @section = @section.first # TODO: is there a better way to preserve which file was used?
+    end
     create_accessors!
+  end
+
+  def load_into_hash(file, ignore_on_error=false)  
+    unless FileTest.exist?(file) 
+      if ignore_on_error 
+        return {}
+      else
+        raise InvalidSettingsFile, file
+      end
+    end
+
+    #puts "\n\nloading into hash from #{file} (namespace: #{self.class.namespace}) (ignore_error: #{ignore_on_error})"  
+    begin
+      hash = YAML.load(ERB.new(File.read(file)).result).to_hash
+    rescue Exception => ex       
+      #puts ex.inspect  
+      #puts "ignoring? #{ignore_on_error}"
+      if ignore_on_error 
+        return {}
+      else
+        raise InvalidSettingsFile, file
+      end
+    end
+    if self.class.namespace
+      hash = hash[self.class.namespace] or raise MissingSetting, "Missing setting '#{self.class.namespace}' in #{file}"
+    end
+    hash
   end
 
   # Called for dynamically-defined keys, and also the first key deferenced at the top-level, if load! is not used.
