@@ -16,7 +16,8 @@ end
 
 # A simple settings solution using a YAML file. See README for more information.
 class Settingslogic < Hash
-  class MissingSetting < StandardError; end
+  class MissingSetting < StandardError; end 
+  class InvalidSettingsFile < StandardError; end
 
   class << self
     def name # :nodoc:
@@ -116,10 +117,12 @@ class Settingslogic < Hash
     when Hash
       self.replace hash_or_file_or_array
     when Array
-      hash = {}
-      hash_or_file_or_array.each do |filename|
-        #puts "loading from #{filename}"
-        hash.deep_merge!(load_into_hash(filename).deep_delete_nil)
+      hash = {}                                            
+      ignore_load_error = false
+      hash_or_file_or_array.each_with_index do |filename, n|
+        #puts "loading from #{filename}"                    
+        ignore_load_error = (n!=0)
+        hash.deep_merge!(load_into_hash(filename, ignore_load_error).deep_delete_nil)
       end
       self.replace hash
     else
@@ -133,10 +136,27 @@ class Settingslogic < Hash
     create_accessors!
   end
 
-  def load_into_hash(file)
-    return {} unless FileTest.exist?(file)
-    #puts "loading into hash from #{file} (namespace: #{self.class.namespace})"
-    hash = YAML.load(ERB.new(File.read(file)).result).to_hash
+  def load_into_hash(file, ignore_on_error=false)  
+    unless FileTest.exist?(file) 
+      if ignore_on_error 
+        return {}
+      else
+        raise InvalidSettingsFile, file
+      end
+    end
+
+    #puts "\n\nloading into hash from #{file} (namespace: #{self.class.namespace}) (ignore_error: #{ignore_on_error})"  
+    begin
+      hash = YAML.load(ERB.new(File.read(file)).result).to_hash
+    rescue Exception => ex       
+      #puts ex.inspect  
+      #puts "ignoring? #{ignore_on_error}"
+      if ignore_on_error 
+        return {}
+      else
+        raise InvalidSettingsFile, file
+      end
+    end
     if self.class.namespace
       hash = hash[self.class.namespace] or raise MissingSetting, "Missing setting '#{self.class.namespace}' in #{file}"
     end
