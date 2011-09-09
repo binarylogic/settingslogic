@@ -65,6 +65,12 @@ Using a namespace allows us to change our configuration depending on our environ
   production:
     <<: *defaults
 
+_Note_: Certain Ruby/Bundler versions include a version of the Psych YAML parser which incorrectly handles merges (the `<<` in the example above.) 
+If your default settings seem to be overwriting your environment-specific settings, including the following lines in your config/boot.rb file may solve the problem:
+
+  require 'yaml'
+  YAML::ENGINE.yamler= 'syck'
+
 === 3. Access your settings
 
   >> Rails.env
