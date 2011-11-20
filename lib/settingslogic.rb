@@ -158,4 +158,8 @@ class Settingslogic < Hash
       end
     EndEval
   end
+
+  def to_hash
+    self.inject({}) {|hash, (k, v)| hash[k] = v; hash }
+  end
 end
