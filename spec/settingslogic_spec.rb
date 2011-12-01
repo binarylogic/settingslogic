@@ -138,4 +138,39 @@ describe "Settingslogic" do
   it "should be a hash" do
     Settings.send(:instance).should be_is_a(Hash)
   end
+
+  describe '#to_hash' do
+    context 'top of settings' do
+      subject { Settings2.to_hash }
+
+      it { should be_an_instance_of Hash }
+      it { should_not be_kind_of Settingslogic }
+
+      it 'should preserve the original values' do
+        should == {'deep' => {'another' => 'my value', 'child' => {'value' => 2}}, 'setting1_child' => 'saweet'}
+      end
+    end
+
+    context 'one-nested settings' do
+      subject { Settings2.deep.to_hash }
+
+      it { should be_an_instance_of Hash }
+      it { should_not be_kind_of Settingslogic }
+
+      it 'should preserve the original values' do
+        should == {'another' => 'my value', 'child' => {'value' => 2}}
+      end
+    end
+
+    context 'two-nested settings' do
+      subject { Settings2.deep.child.to_hash }
+
+      it { should be_an_instance_of Hash }
+      it { should_not be_kind_of Settingslogic }
+
+      it 'should preserve the original values' do
+        should == {'value' => 2}
+      end
+    end
+  end
 end
