@@ -48,7 +48,7 @@ to a key in the YAML file.
 
 Using a namespace allows us to change our configuration depending on our environment:
 
-  # app/config/application.yml
+  # config/application.yml
   defaults: &defaults
     cool:
       saweet: nested settings
