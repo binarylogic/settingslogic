@@ -107,6 +107,10 @@ describe "Settingslogic" do
     e.should_not be_nil
   end
 
+  it "should allow suppressing errors" do
+    Settings4.non_existent_key.should be_nil
+  end
+
   # This one edge case currently does not pass, because it requires very
   # esoteric code in order to make it pass.  It was judged not worth fixing,
   # as it introduces significant complexity for minor gain.
