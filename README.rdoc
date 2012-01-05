@@ -114,7 +114,7 @@ Modifying our model example:
 This would allow you to specify a custom value for per_page just for posts, or
 to fall back to your default value if not specified.
 
-=== 4. Suppressing Exceptions Conditionally
+=== 5. Suppressing Exceptions Conditionally
 
 Raising exceptions for missing settings helps highlight configuration problems.  However, in a
 Rails app it may make sense to suppress this in production and return nil for missing settings.
