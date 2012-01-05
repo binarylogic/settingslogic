@@ -114,6 +114,22 @@ Modifying our model example:
 This would allow you to specify a custom value for per_page just for posts, or
 to fall back to your default value if not specified.
 
+=== 4. Suppressing Exceptions Conditionally
+
+Raising exceptions for missing settings helps highlight configuration problems.  However, in a
+Rails app it may make sense to suppress this in production and return nil for missing settings.
+While it's useful to stop and highlight an error in development or test environments, this is
+often not the right answer for production.
+
+  class Settings < Settingslogic
+    source "#{Rails.root}/config/application.yml"
+    namespace Rails.env
+    suppress_errors Rails.env.production?
+  end
+
+  >> Settings.non_existent_key
+  => nil
+
 == Note on Sinatra / Capistrano / Vlad
 
 Each of these frameworks uses a +set+ convention for settings, which actually defines methods
