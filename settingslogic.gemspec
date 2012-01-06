@@ -47,18 +47,30 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<rake>, [">= 0"])
       s.add_runtime_dependency(%q<jeweler>, [">= 0"])
       s.add_runtime_dependency(%q<rspec>, [">= 0"])
-      s.add_runtime_dependency(%q<ruby-debug19>, [">= 0"])
+      if RUBY_VERSION < "1.9"
+        s.add_runtime_dependency(%q<ruby-debug>, [">= 0"])
+      else
+        s.add_runtime_dependency(%q<ruby-debug19>, [">= 0"])
+      end
     else
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
-      s.add_dependency(%q<ruby-debug19>, [">= 0"])
+      if RUBY_VERSION < "1.9"
+        s.add_dependency(%q<ruby-debug>, [">= 0"])
+      else
+        s.add_dependency(%q<ruby-debug19>, [">= 0"])
+      end
     end
   else
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
-    s.add_dependency(%q<ruby-debug19>, [">= 0"])
+    if RUBY_VERSION < "1.9"
+      s.add_dependency(%q<ruby-debug>, [">= 0"])
+    else
+      s.add_dependency(%q<ruby-debug19>, [">= 0"])
+    end
   end
 end
 
