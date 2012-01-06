@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem 'rake', '0.8.7'
+gem 'rake'
 gem 'jeweler'
 gem 'rspec', :require => 'spec'
-gem 'ruby-debug'
+gem 'ruby-debug19'
