@@ -35,7 +35,15 @@ class Settingslogic < Hash
         @namespace = value
       end
     end
-    
+
+    def suppress_errors(value = nil)
+      if value.nil?
+        @suppress_errors
+      else
+        @suppress_errors = value
+      end
+    end
+
     def [](key)
       instance.fetch(key.to_s, nil)
     end
@@ -104,7 +112,7 @@ class Settingslogic < Hash
     else
       hash = YAML.load(ERB.new(File.read(hash_or_file)).result).to_hash
       if self.class.namespace
-        hash = hash[self.class.namespace] or raise MissingSetting, "Missing setting '#{self.class.namespace}' in #{hash_or_file}"
+        hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{hash_or_file}")
       end
       self.replace hash
     end
@@ -116,7 +124,7 @@ class Settingslogic < Hash
   # Otherwise, create_accessors! (called by new) will have created actual methods for each key.
   def method_missing(name, *args, &block)
     key = name.to_s
-    raise MissingSetting, "Missing setting '#{key}' in #{@section}" unless has_key? key
+    return missing_key("Missing setting '#{key}' in #{@section}") unless has_key? key
     value = fetch(key)
     create_accessor_for(key)
     value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
@@ -152,10 +160,16 @@ class Settingslogic < Hash
     self.class.class_eval <<-EndEval
       def #{key}
         return @#{key} if @#{key}
-        raise MissingSetting, "Missing setting '#{key}' in #{@section}" unless has_key? '#{key}'
+        return missing_key("Missing setting '#{key}' in #{@section}") unless has_key? '#{key}'
         value = fetch('#{key}')
         @#{key} = value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
       end
     EndEval
+  end
+
+  def missing_key(msg)
+    return nil if self.class.suppress_errors
+
+    raise MissingSetting, msg
   end
 end

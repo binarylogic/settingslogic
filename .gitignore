@@ -5,4 +5,5 @@ pkg/*
 coverage/*
 doc/*
 benchmarks/*
-
+.bundle
+vendor/bundle
