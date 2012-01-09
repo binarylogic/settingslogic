@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "settingslogic"
-  s.version = "2.0.7"
+  s.version = "2.0.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ben Johnson of Binary Logic"]
-  s.date = "2012-01-06"
+  s.date = "2012-01-09"
   s.email = "bjohnson@binarylogic.com"
   s.extra_rdoc_files = [
     "LICENSE",
@@ -47,30 +47,21 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
-      if RUBY_VERSION < "1.9"
-        s.add_development_dependency(%q<ruby-debug>, [">= 0"])
-      else
-        s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
-      end
+      s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
     else
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
-      if RUBY_VERSION < "1.9"
-        s.add_dependency(%q<ruby-debug>, [">= 0"])
-      else
-        s.add_dependency(%q<ruby-debug19>, [">= 0"])
-      end
+      s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<ruby-debug19>, [">= 0"])
     end
   else
     s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
-    if RUBY_VERSION < "1.9"
-      s.add_dependency(%q<ruby-debug>, [">= 0"])
-    else
-      s.add_dependency(%q<ruby-debug19>, [">= 0"])
-    end
+    s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<ruby-debug19>, [">= 0"])
   end
 end
 
