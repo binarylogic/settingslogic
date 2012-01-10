@@ -1,5 +1,6 @@
 require "yaml"
 require "erb"
+require 'open-uri'
 
 # A simple settings solution using a YAML file. See README for more information.
 class Settingslogic < Hash
@@ -110,7 +111,7 @@ class Settingslogic < Hash
     when Hash
       self.replace hash_or_file
     else
-      hash = YAML.load(ERB.new(File.read(hash_or_file)).result).to_hash
+      hash = YAML.load(ERB.new(open(hash_or_file).read).result).to_hash
       if self.class.namespace
         hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{hash_or_file}")
       end
