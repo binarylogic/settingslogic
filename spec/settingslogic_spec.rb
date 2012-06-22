@@ -152,6 +152,23 @@ describe "Settingslogic" do
   it "should allow a name setting to be overriden" do
     Settings.name.should == 'test'
   end
+  
+  it "should allow symbolize_keys" do
+    Settings.reload!
+    result = Settings.language.haskell.symbolize_keys 
+    result.class.should == Hash
+    result.should == {:paradigm => "functional"} 
+  end
+  
+  it "should allow symbolize_keys on nested hashes" do
+    Settings.reload!
+    result = Settings.language.symbolize_keys
+    result.class.should == Hash
+    result.should == {
+      :haskell => {:paradigm => "functional"},
+      :smalltalk => {:paradigm => "object oriented"}
+    }
+  end
 
   # Put this test last or else call to .instance will load @instance,
   # masking bugs.
