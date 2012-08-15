@@ -4,11 +4,11 @@ describe "Settingslogic" do
   it "should access settings" do
     Settings.setting2.should == 5
   end
-  
+
   it "should access nested settings" do
     Settings.setting1.setting1_child.should == "saweet"
   end
-  
+
   it "should access deep nested settings" do
     Settings.setting1.deep.another.should == "my value"
   end
@@ -35,7 +35,7 @@ describe "Settingslogic" do
     Settings.language.haskell.paradigm.should == 'functional'
     Settings.language.smalltalk.paradigm.should == 'object oriented'
   end
-  
+
   it "should not collide with global methods" do
     Settings3.nested.collides.does.should == 'not either'
     Settings3[:nested] = 'fooey'
@@ -73,7 +73,7 @@ describe "Settingslogic" do
     end
     e.should_not be_nil
     e.message.should =~ /Missing setting 'erlang' in 'language' section/
-    
+
     Settings.language['erlang'].should be_nil
     Settings.language['erlang'] = 5
     Settings.language['erlang'].should == 5
@@ -158,5 +158,14 @@ describe "Settingslogic" do
   it "should be a hash" do
     Settings.send(:instance).should be_is_a(Hash)
   end
-  
+
+  # rspec-core issue 620
+  it "should not blow up if #to_ary is called on it via Array#flatten" do
+    lambda {
+      [ Settings, ['a'] ].flatten
+    }.should_not raise_error
+
+    [Settings, ['a']].flatten.should == [Settings, 'a']
+  end
+
 end

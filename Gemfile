@@ -3,7 +3,7 @@ source "http://rubygems.org"
 group :development do
   gem 'rake'
   gem 'jeweler'
-  gem 'rspec', :require => 'spec'
+  gem 'rspec'
   gem 'rcov'
   if RUBY_VERSION < "1.9"
     gem 'ruby-debug'
