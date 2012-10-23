@@ -111,7 +111,8 @@ class Settingslogic < Hash
     when Hash
       self.replace hash_or_file
     else
-      hash = YAML.load(ERB.new(open(hash_or_file).read).result).to_hash
+      file_contents = open(hash_or_file).read
+      hash = file_contents.empty? ? {} : YAML.load(ERB.new(file_contents).result).to_hash
       if self.class.namespace
         hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{hash_or_file}")
       end

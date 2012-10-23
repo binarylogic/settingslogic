@@ -153,6 +153,10 @@ describe "Settingslogic" do
     Settings.name.should == 'test'
   end
 
+  it "should handle empty file" do
+    SettingsEmpty.keys.should eql([])
+  end
+
   # Put this test last or else call to .instance will load @instance,
   # masking bugs.
   it "should be a hash" do
