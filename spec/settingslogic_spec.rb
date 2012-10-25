@@ -162,5 +162,11 @@ describe "Settingslogic" do
   it "should be a hash" do
     Settings.send(:instance).should be_is_a(Hash)
   end
-  
+
+  it "should support overriding settings with custom methods" do
+    Settings["dynamic_flag"] = "X"
+    Settings.dynamic_flag.should == "X"
+    ENV['DYNAMIC_FLAG'] = "Y"
+    Settings.dynamic_flag.should == "Y"
+  end
 end
