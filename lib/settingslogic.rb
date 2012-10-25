@@ -159,6 +159,7 @@ class Settingslogic < Hash
   def create_accessor_for(key, val=nil)
     return unless key.to_s =~ /^\w+$/  # could have "some-setting:" which blows up eval
     instance_variable_set("@#{key}", val) if val
+    return if respond_to?(key)
     self.class.class_eval <<-EndEval
       def #{key}
         return @#{key} if @#{key}
