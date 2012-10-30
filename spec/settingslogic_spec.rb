@@ -9,6 +9,10 @@ describe "Settingslogic" do
     Settings.setting1.setting1_child.should == "saweet"
   end
   
+  it "should access settings in nested arrays" do
+    Settings.array.first.name.should == "first"
+  end
+
   it "should access deep nested settings" do
     Settings.setting1.deep.another.should == "my value"
   end

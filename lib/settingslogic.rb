@@ -164,7 +164,13 @@ class Settingslogic < Hash
         return @#{key} if @#{key}
         return missing_key("Missing setting '#{key}' in #{@section}") unless has_key? '#{key}'
         value = fetch('#{key}')
-        @#{key} = value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
+        @#{key} = if value.is_a?(Hash)
+          self.class.new(value, "'#{key}' section in #{@section}")
+        elsif value.is_a?(Array) && value.all?{|v| v.is_a? Hash}
+          value.map{|v| self.class.new(v)}
+        else
+          value
+        end
       end
     EndEval
   end
