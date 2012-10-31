@@ -162,5 +162,13 @@ describe "Settingslogic" do
   it "should be a hash" do
     Settings.send(:instance).should be_is_a(Hash)
   end
-  
+
+  describe "#to_hash" do
+    it "should return a new instance of a Hash object" do
+      Settings.to_hash.should be_kind_of(Hash)
+      Settings.to_hash.class.name.should == "Hash"
+      Settings.to_hash.object_id.should_not == Settings.object_id
+    end
+  end
+
 end
