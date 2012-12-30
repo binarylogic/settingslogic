@@ -22,27 +22,15 @@ class Settingslogic < Hash
     end
 
     def source(value = nil)
-      if value.nil?
-        @source
-      else
-        @source = value
-      end
+      @source ||= value
     end
 
     def namespace(value = nil)
-      if value.nil?
-        @namespace
-      else
-        @namespace = value
-      end
+      @namespace ||= value
     end
 
     def suppress_errors(value = nil)
-      if value.nil?
-        @suppress_errors
-      else
-        @suppress_errors = value
-      end
+      @suppress_errors ||= value
     end
 
     def [](key)
@@ -60,12 +48,12 @@ class Settingslogic < Hash
       instance
       true
     end
-    
+
     def reload!
       @instance = nil
       load!
     end
-    
+
     private
       def instance
         return @instance if @instance
@@ -73,7 +61,7 @@ class Settingslogic < Hash
         create_accessors!
         @instance
       end
-      
+
       def method_missing(name, *args, &block)
         instance.send(name, *args, &block)
       end
