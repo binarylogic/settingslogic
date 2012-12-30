@@ -163,7 +163,7 @@ class Settingslogic < Hash
   # http://bmorearty.wordpress.com/2009/01/09/fun-with-rubys-instance_eval-and-class_eval/
   def create_accessor_for(key, val=nil)
     return unless key.to_s =~ /^\w+$/  # could have "some-setting:" which blows up eval
-    instance_variable_set("@#{key}", val) if val
+    instance_variable_set("@#{key}", val)
     self.class.class_eval <<-EndEval
       def #{key}
         return @#{key} if @#{key}

@@ -130,6 +130,18 @@ describe "Settingslogic" do
     Settings.language['some-dash-setting#'].should == 'dashtastic'
   end
 
+  it "should handle settings with nil value" do
+    Settings["flag"] = true
+    Settings["flag"] = nil
+    Settings.flag.should == nil
+  end
+
+  it "should handle settings with false value" do
+    Settings["flag"] = true
+    Settings["flag"] = false
+    Settings.flag.should == false
+  end
+
   it "should support instance usage as well" do
     settings = SettingsInst.new(Settings.source)
     settings.setting1.setting1_child.should == "saweet"
