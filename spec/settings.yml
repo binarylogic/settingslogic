@@ -20,3 +20,9 @@ collides:
 nested:
   collides:
     does: not either
+
+array:
+  -
+    name: first
+  -
+    name: second
