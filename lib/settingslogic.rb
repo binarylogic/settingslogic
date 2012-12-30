@@ -143,6 +143,11 @@ class Settingslogic < Hash
     create_accessor_for(key, val)
   end
 
+  # Returns an instance of a Hash object
+  def to_hash
+    Hash[self]
+  end
+
   # This handles naming collisions with Sinatra/Vlad/Capistrano. Since these use a set()
   # helper that defines methods in Object, ANY method_missing ANYWHERE picks up the Vlad/Sinatra
   # settings!  So settings.deploy_to title actually calls Object.deploy_to (from set :deploy_to, "host"),
