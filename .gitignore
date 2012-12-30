@@ -7,3 +7,4 @@ doc/*
 benchmarks/*
 .bundle
 vendor/bundle
+.rvmrc
