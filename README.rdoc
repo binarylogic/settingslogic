@@ -3,8 +3,6 @@
 Settingslogic is a simple configuration / settings solution that uses an ERB enabled YAML file. It has been great for
 our apps, maybe you will enjoy it too.  Settingslogic works with Rails, Sinatra, or any Ruby project.
 
-So here is my question to you.....is Settingslogic a great settings solution or the greatest?
-
 == Helpful links
 
 *	<b>Documentation:</b> http://rdoc.info/projects/binarylogic/settingslogic
@@ -13,15 +11,7 @@ So here is my question to you.....is Settingslogic a great settings solution or 
 
 == Installation
 
-Install from rubyforge/gemcutter:
-
-  sudo gem install settingslogic
-
-Or as a Rails plugin:
-
-  script/plugin install git://github.com/binarylogic/settingslogic.git
-
-Settingslogic does not have any dependencies on Rails.  Installing as a gem is recommended.
+  gem install settingslogic
 
 == Usage
 
@@ -54,7 +44,7 @@ Using a namespace allows us to change our configuration depending on our environ
       saweet: nested settings
     neat_setting: 24
     awesome_setting: <%= "Did you know 5 + 5 = #{5 + 5}?" %>
-  
+
   development:
     <<: *defaults
     neat_setting: 800
@@ -65,7 +55,7 @@ Using a namespace allows us to change our configuration depending on our environ
   production:
     <<: *defaults
 
-_Note_: Certain Ruby/Bundler versions include a version of the Psych YAML parser which incorrectly handles merges (the `<<` in the example above.) 
+_Note_: Certain Ruby/Bundler versions include a version of the Psych YAML parser which incorrectly handles merges (the `<<` in the example above.)
 If your default settings seem to be overwriting your environment-specific settings, including the following lines in your config/boot.rb file may solve the problem:
 
   require 'yaml'
@@ -78,17 +68,17 @@ If your default settings seem to be overwriting your environment-specific settin
 
   >> Settings.cool
   => "#<Settingslogic::Settings ... >"
-  
+
   >> Settings.cool.saweet
   => "nested settings"
-  
+
   >> Settings.neat_setting
   => 800
-  
+
   >> Settings.awesome_setting
   => "Did you know 5 + 5 = 10?"
 
-You can use these settings anywhere, for example in a model:  
+You can use these settings anywhere, for example in a model:
 
   class Post < ActiveRecord::Base
     self.per_page = Settings.pagination.posts_per_page
@@ -116,7 +106,7 @@ Modifying our model example:
   class Post < ActiveRecord::Base
     self.per_page = Settings.posts['per_page'] || Settings.pagination.per_page
   end
-  
+
 This would allow you to specify a custom value for per_page just for posts, or
 to fall back to your default value if not specified.
 
@@ -145,7 +135,7 @@ in the global Object namespace:
 
 This can cause collisions with Settingslogic, since those methods are global. Luckily, the
 solution is to just add a call to load! in your class:
- 
+
   class Settings < Settingslogic
     source "#{Rails.root}/config/application.yml"
     namespace Rails.env
