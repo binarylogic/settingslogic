@@ -1,7 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + "/spec_helper")
 
-puts "Value: #{Settings.get('setting1.deep.child.value')}"
-
 describe "Settingslogic" do
   it "should access settings" do
     Settings.setting2.should == 5
