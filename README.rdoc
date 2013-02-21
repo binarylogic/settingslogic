@@ -72,6 +72,9 @@ If your default settings seem to be overwriting your environment-specific settin
   >> Settings.cool.saweet
   => "nested settings"
 
+  >> Settings.get('cool.saweet')
+  => "nested settings"
+
   >> Settings.neat_setting
   => 800
 

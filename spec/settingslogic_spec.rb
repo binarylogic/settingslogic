@@ -1,5 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/spec_helper")
 
+puts "Value: #{Settings.get('setting1.deep.child.value')}"
+
 describe "Settingslogic" do
   it "should access settings" do
     Settings.setting2.should == 5
@@ -114,6 +116,18 @@ describe "Settingslogic" do
   it "should allow suppressing errors" do
     Settings4.non_existent_key.should be_nil
   end
+
+
+  context "#get" do
+    it "should suppress errors for nonexistent nested parameters" do
+      expect { Settings4.get('non.existent.key') }.not_to raise_exception
+    end
+
+    it "should throw an exception for nonexistent nested parameters when suppress_errors=false" do
+      expect { Settings.get('non.existent.key') }.to raise_exception
+    end
+  end
+
 
   # This one edge case currently does not pass, because it requires very
   # esoteric code in order to make it pass.  It was judged not worth fixing,
