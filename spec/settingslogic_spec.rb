@@ -204,4 +204,13 @@ describe "Settingslogic" do
     end
   end
 
+  describe "#to_nested_hash" do
+    it "should convert all nested Settingslogic objects to Hash objects" do
+      hash = Settings.to_nested_hash
+      hash.class.should == Hash
+      hash["language"].class.should == Hash
+      hash["language"]["haskell"].class.should == Hash
+      hash["language"]["haskell"]["paradigm"].class.should == String
+    end
+  end
 end
