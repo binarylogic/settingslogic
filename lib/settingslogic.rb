@@ -145,6 +145,10 @@ class Settingslogic < Hash
     end
   end
 
+  def save(path)
+    File.open(path, "w") { |f| f << to_nested_hash.to_yaml }
+  end
+
   # This handles naming collisions with Sinatra/Vlad/Capistrano. Since these use a set()
   # helper that defines methods in Object, ANY method_missing ANYWHERE picks up the Vlad/Sinatra
   # settings!  So settings.deploy_to title actually calls Object.deploy_to (from set :deploy_to, "host"),

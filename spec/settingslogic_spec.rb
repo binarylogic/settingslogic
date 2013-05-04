@@ -213,4 +213,17 @@ describe "Settingslogic" do
       hash["language"]["haskell"]["paradigm"].class.should == String
     end
   end
+
+  describe "#save(file)" do
+    it "should save Settingslogic object such that it can be reloaded later" do
+      Settings["extra"] = {}
+      Settings["extra"]["value"] = 123
+      Settings.extra.value.should == 123
+      Settings.save("/tmp/settings.yml")
+
+      later_on = Settingslogic.new("/tmp/settings.yml")
+      later_on.extra.value.should == 123
+    end
+  end
+
 end
