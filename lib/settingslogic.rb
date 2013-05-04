@@ -131,6 +131,18 @@ class Settingslogic < Hash
     create_accessor_for(key, val)
   end
 
+  def set(nested_key, val)
+    target_settings_field = self
+    settings_key_portions = nested_key.to_s.split(".")
+    parent_key_portions, final_key = settings_key_portions[0..-2], settings_key_portions[-1]
+    parent_key_portions.each do |key_portion|
+      target_settings_field[key_portion] ||= Settingslogic.new({})
+      target_settings_field = target_settings_field[key_portion]
+    end
+    target_settings_field[final_key] = val
+    create_accessors!
+  end
+
   # Returns an instance of a Hash object
   def to_hash
     Hash[self]

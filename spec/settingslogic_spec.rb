@@ -204,4 +204,21 @@ describe "Settingslogic" do
     end
   end
 
+  describe "#set('nested.key', value)" do
+    it "works like []= for non-dotted keys" do
+      Settings.set("simple", "value")
+      Settings.simple.should == "value"
+    end
+
+    it "creates new nested structures" do
+      Settings.set("nested.key", "value")
+      Settings.nested.key.should == "value"
+    end
+
+    it "reuses existing structures" do
+      Settings.set("language.ruby.paradigm", "scripting")
+      Settings.language.haskell.paradigm.should == "functional"
+      Settings.language.ruby.paradigm.should == "scripting"
+    end
+  end
 end
