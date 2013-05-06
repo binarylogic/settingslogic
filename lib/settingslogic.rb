@@ -148,6 +148,7 @@ class Settingslogic < Hash
   end
 
   # Like #set, but only sets the value if the key is not already set
+  # Returns the existing value or the newly-set default value
   def set_default(nested_key, val)
     target_settings_field = self
     settings_key_portions = nested_key.to_s.split(".")
@@ -157,7 +158,6 @@ class Settingslogic < Hash
       target_settings_field = target_settings_field[key_portion]
     end
     target_settings_field[final_key] ||= val
-    create_accessors!
   end
 
   def nested_value(nested_key)
