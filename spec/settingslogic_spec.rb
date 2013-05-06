@@ -221,4 +221,23 @@ describe "Settingslogic" do
       Settings.language.ruby.paradigm.should == "scripting"
     end
   end
+
+  describe "#set_default('nested.key', value)" do
+    it "works like #set if key 'nested.key' missing" do
+      Settings.set("nested", {})
+      Settings.set_default("nested.key", "default")
+      Settings.nested.key.should == "default"
+    end
+
+    it "works like #set if key 'nested' missing" do
+      Settings.set_default("nested.key", "default")
+      Settings.nested.key.should == "default"
+    end
+
+    it "does nothing if nested.key is set" do
+      Settings.set("nested.key", "value")
+      Settings.set_default("nested.key", "default")
+      Settings.nested.key.should == "value"
+    end
+  end
 end
