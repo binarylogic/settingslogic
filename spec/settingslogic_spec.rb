@@ -240,4 +240,22 @@ describe "Settingslogic" do
       Settings.nested.key.should == "value"
     end
   end
+
+  describe "#exists?('nested.key') && #value('nested.key')" do
+    before { Settings.reload! }
+    it "returns truthy if nested.key is set" do
+      Settings.set("nested.key", "value")
+      Settings.nested_value("nested.key").should == "value"
+    end
+
+    it "returns falsy if nested is not set" do
+      Settings.nested_value("nested.key").should be_nil
+    end
+
+    it "returns falsy if nested.key is not set" do
+      Settings.set("nested", {})
+      Settings.exists?("nested.key").should be_nil
+    end
+  end
+
 end
