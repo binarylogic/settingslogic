@@ -216,6 +216,7 @@ describe "Settingslogic" do
 
   describe "#save(file)" do
     it "should save Settingslogic object such that it can be reloaded later" do
+      Settings.reload!
       Settings["extra"] = {}
       Settings["extra"]["value"] = 123
       Settings.extra.value.should == 123
