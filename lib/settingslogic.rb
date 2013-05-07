@@ -158,6 +158,7 @@ class Settingslogic < Hash
       target_settings_field = target_settings_field[key_portion]
     end
     target_settings_field[final_key] ||= val
+    target_settings_field[final_key]
   end
 
   def nested_value(nested_key)
