@@ -5,8 +5,8 @@ our apps, maybe you will enjoy it too.  Settingslogic works with Rails, Sinatra,
 
 == Helpful links
 
-*	<b>Documentation:</b> http://rdoc.info/projects/binarylogic/settingslogic
-*	<b>Repository:</b> http://github.com/binarylogic/settingslogic/tree/master
+* <b>Documentation:</b> http://rdoc.info/projects/binarylogic/settingslogic
+* <b>Repository:</b> http://github.com/binarylogic/settingslogic/tree/master
 * <b>Issues:</b> http://github.com/binarylogic/settingslogic/issues
 
 == Installation
