@@ -56,11 +56,6 @@ class Settingslogic < Hash
         next if new_hash.empty?
 
         if new_hash.is_a?(Hash)
-          # if self.namespace
-          #   debugger
-          #   new_hash = new_hash[self.namespace] or
-          #     return missing_key("Missing setting '#{self.namespace}' in #{settings.inspect}")
-          # end
           resulting_hash.deep_merge!(new_hash)
         else
           puts "ExtendedSettings WARN : unable to add settings object : #{ settings.inspect}"
@@ -149,12 +144,7 @@ class Settingslogic < Hash
       end
       self.replace hash
     end
-    if self.class.source.is_a?(Hash)
-      puts "Warning can't string interp all hashes, current config is: "
-      puts self.class.source
-      section =  "Missing setting in custom hash"
-    end
-    @section = section || self.class.source # so end of error says "in application.yml"
+    @section = section || self.class.source.to_yaml # so end of error says "in application.yml"
     create_accessors!
   end
 

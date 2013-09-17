@@ -210,11 +210,20 @@ describe "Settingslogic" do
             "#{File.dirname(__FILE__)}/settings.yml",
             "#{File.dirname(__FILE__)}/settings_empty.yml",
             "#{File.dirname(__FILE__)}/settings2.yml"]
-        config = Settingslogic.new ("#{File.dirname(__FILE__)}/settings.yml")
-        StackedSettings.flatten_stacked_settings_to_hash(configs).is_a?(Hash).should == true
+        StackedSettings.flatten_stacked_settings_to_hash(configs)
+          .is_a?(Hash).should == true
       end
       it "returns the last setting for each configuration attributed" do
         StackedSettings.setting1.setting1_child.should == 'saweeter'
+      end
+      it "adds new settings from secondary sources" do
+        StackedSettings.new_stuff.because.should == "testing has to happen"
+      end
+      it "keeps the latest setting for each variable" do
+        StackedSettings.language.haskell.paradigm.should == 'functional'
+      end
+      it "accepts a hash as a source" do
+        StackedSettings.setting2.should == 10
       end
     end
   end
