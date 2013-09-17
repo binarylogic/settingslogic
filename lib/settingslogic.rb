@@ -1,6 +1,7 @@
 require "yaml"
 require "erb"
 require 'open-uri'
+require 'hash_deep_merge'
 
 # A simple settings solution using a YAML file. See README for more information.
 class Settingslogic < Hash
@@ -10,7 +11,7 @@ class Settingslogic < Hash
     def name # :nodoc:
       self.superclass != Hash && instance.key?("name") ? instance.name : super
     end
-        
+
     # Enables Settings.get('nested.key.name') for dynamic access
     def get(key)
       parts = key.split('.')
@@ -22,7 +23,45 @@ class Settingslogic < Hash
     end
 
     def source(value = nil)
-      @source ||= value
+      if value.is_a?(Array)
+        @source = flatten_stacked_settings_to_hash(value)
+      else
+        @source ||= value
+      end
+    end
+
+    # If initialize was given an array of settings, use deep merge to flatten
+    # all settings into one hash, where the last processed setting is chosen
+    def flatten_stacked_settings_to_hash (array_of_settings)
+      resulting_hash = Hash.new
+      array_of_settings.each do |settings|
+        new_hash = nil
+        case settings
+
+        when Hash
+          new_hash = settings
+
+        when String  # assume it's a filename...
+          begin
+            file_contents = open(settings).read
+            new_hash = file_contents.empty? ? {} : YAML.load(ERB.new(file_contents).result).to_hash
+          rescue
+          end
+
+        else
+          new_hash = (settings.to_hash rescue nil)
+        end
+
+        #continue if empty
+        next if new_hash.empty?
+
+        if new_hash.is_a?(Hash)
+          resulting_hash.deep_merge!(new_hash)
+        else
+          puts "ExtendedSettings WARN : unable to add settings object : #{ settings.inspect}"
+        end
+      end
+      resulting_hash
     end
 
     def namespace(value = nil)
@@ -92,7 +131,6 @@ class Settingslogic < Hash
   # if you are using this in rails. If you pass a string it should be an absolute path to your settings file.
   # Then you can pass a hash, and it just allows you to access the hash via methods.
   def initialize(hash_or_file = self.class.source, section = nil)
-    #puts "new! #{hash_or_file}"
     case hash_or_file
     when nil
       raise Errno::ENOENT, "No file specified as Settingslogic source"
@@ -106,7 +144,7 @@ class Settingslogic < Hash
       end
       self.replace hash
     end
-    @section = section || self.class.source  # so end of error says "in application.yml"
+    @section = section || self.class.source.to_yaml # so end of error says "in application.yml"
     create_accessors!
   end
 
@@ -167,25 +205,24 @@ class Settingslogic < Hash
       end
     EndEval
   end
-  
+
   def symbolize_keys
-    
+
     inject({}) do |memo, tuple|
-      
+
       k = (tuple.first.to_sym rescue tuple.first) || tuple.first
-            
+
       v = k.is_a?(Symbol) ? send(k) : tuple.last # make sure the value is accessed the same way Settings.foo.bar works
-      
+
       memo[k] = v && v.respond_to?(:symbolize_keys) ? v.symbolize_keys : v #recurse for nested hashes
-      
+
       memo
     end
-    
+
   end
-  
+
   def missing_key(msg)
     return nil if self.class.suppress_errors
-
     raise MissingSetting, msg
   end
 end

@@ -4,11 +4,11 @@ describe "Settingslogic" do
   it "should access settings" do
     Settings.setting2.should == 5
   end
-  
+
   it "should access nested settings" do
     Settings.setting1.setting1_child.should == "saweet"
   end
-  
+
   it "should access settings in nested arrays" do
     Settings.array.first.name.should == "first"
   end
@@ -39,7 +39,7 @@ describe "Settingslogic" do
     Settings.language.haskell.paradigm.should == 'functional'
     Settings.language.smalltalk.paradigm.should == 'object oriented'
   end
-  
+
   it "should not collide with global methods" do
     Settings3.nested.collides.does.should == 'not either'
     Settings3[:nested] = 'fooey'
@@ -77,7 +77,7 @@ describe "Settingslogic" do
     end
     e.should_not be_nil
     e.message.should =~ /Missing setting 'erlang' in 'language' section/
-    
+
     Settings.language['erlang'].should be_nil
     Settings.language['erlang'] = 5
     Settings.language['erlang'].should == 5
@@ -168,14 +168,14 @@ describe "Settingslogic" do
   it "should allow a name setting to be overriden" do
     Settings.name.should == 'test'
   end
-  
+
   it "should allow symbolize_keys" do
     Settings.reload!
-    result = Settings.language.haskell.symbolize_keys 
+    result = Settings.language.haskell.symbolize_keys
     result.class.should == Hash
-    result.should == {:paradigm => "functional"} 
+    result.should == {:paradigm => "functional"}
   end
-  
+
   it "should allow symbolize_keys on nested hashes" do
     Settings.reload!
     result = Settings.language.symbolize_keys
@@ -203,5 +203,28 @@ describe "Settingslogic" do
       Settings.to_hash.object_id.should_not == Settings.object_id
     end
   end
-
+  describe "providing mulitple configuration sources" do
+    describe "#flatten_stacked_settings_to_hash" do
+      it "returns a hash from mulitple sources" do
+        configs = [
+            "#{File.dirname(__FILE__)}/settings.yml",
+            "#{File.dirname(__FILE__)}/settings_empty.yml",
+            "#{File.dirname(__FILE__)}/settings2.yml"]
+        StackedSettings.flatten_stacked_settings_to_hash(configs)
+          .is_a?(Hash).should == true
+      end
+      it "returns the last setting for each configuration attributed" do
+        StackedSettings.setting1.setting1_child.should == 'saweeter'
+      end
+      it "adds new settings from secondary sources" do
+        StackedSettings.new_stuff.because.should == "testing has to happen"
+      end
+      it "keeps the latest setting for each variable" do
+        StackedSettings.language.haskell.paradigm.should == 'functional'
+      end
+      it "accepts a hash as a source" do
+        StackedSettings.setting2.should == 10
+      end
+    end
+  end
 end
