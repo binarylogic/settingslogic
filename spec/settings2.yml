@@ -1,0 +1,31 @@
+setting1:
+  setting1_child: saweeter
+  deep:
+    another: my value
+    child:
+      value: 4
+
+setting2: 5
+setting3: <%= 5 * 5 %>
+name: test is gone
+
+language:
+  haskell:
+    paradigm: functional
+  smalltalk:
+    paradigm: object oriented
+
+collides:
+  does: not
+nested:
+  collides:
+    does: not either
+
+new_stuff:
+  because: testing has to happen
+
+array:
+  -
+    name: first
+  -
+    name: second

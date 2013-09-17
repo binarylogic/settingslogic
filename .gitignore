@@ -8,3 +8,4 @@ benchmarks/*
 .bundle
 vendor/bundle
 .rvmrc
+Gemfile.lock
