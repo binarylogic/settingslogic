@@ -91,7 +91,7 @@ class Settingslogic < Hash
   # Basically if you pass a symbol it will look for that file in the configs directory of your rails app,
   # if you are using this in rails. If you pass a string it should be an absolute path to your settings file.
   # Then you can pass a hash, and it just allows you to access the hash via methods.
-  def initialize(hash_or_file = self.class.source, section = nil)
+  def initialize(hash_or_file = self.class.source, key = nil, section = nil)
     #puts "new! #{hash_or_file}"
     case hash_or_file
     when nil
@@ -102,11 +102,12 @@ class Settingslogic < Hash
       file_contents = open(hash_or_file).read
       hash = file_contents.empty? ? {} : YAML.load(ERB.new(file_contents).result).to_hash
       if self.class.namespace
-        hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{hash_or_file}")
+        hash = hash[self.class.namespace] or return missing_key(self.class.namespace)
       end
       self.replace hash
     end
-    @section = section || self.class.source  # so end of error says "in application.yml"
+    section = section + [key] unless section.nil? && key.nil?
+    @sections = section || [self.class.to_s]  # so end of error says "in application.yml"
     create_accessors!
   end
 
@@ -114,10 +115,10 @@ class Settingslogic < Hash
   # Otherwise, create_accessors! (called by new) will have created actual methods for each key.
   def method_missing(name, *args, &block)
     key = name.to_s
-    return missing_key("Missing setting '#{key}' in #{@section}") unless has_key? key
+    return missing_key(key) unless has_key? key
     value = fetch(key)
     create_accessor_for(key)
-    value.is_a?(Hash) ? self.class.new(value, "'#{key}' section in #{@section}") : value
+    value.is_a?(Hash) ? self.class.new(value, key, @sections) : value
   end
 
   def [](key)
@@ -126,7 +127,7 @@ class Settingslogic < Hash
 
   def []=(key,val)
     # Setting[:key][:key2] = 'value' for dynamic settings
-    val = self.class.new(val, @section) if val.is_a? Hash
+    val = self.class.new(val, key, @sections) if val.is_a? Hash
     store(key.to_s, val)
     create_accessor_for(key, val)
   end
@@ -155,10 +156,10 @@ class Settingslogic < Hash
     self.class.class_eval <<-EndEval
       def #{key}
         return @#{key} if @#{key}
-        return missing_key("Missing setting '#{key}' in #{@section}") unless has_key? '#{key}'
+        return missing_key(key) unless has_key? '#{key}'
         value = fetch('#{key}')
         @#{key} = if value.is_a?(Hash)
-          self.class.new(value, "'#{key}' section in #{@section}")
+          self.class.new(value, '#{key}', @sections)
         elsif value.is_a?(Array) && value.all?{|v| v.is_a? Hash}
           value.map{|v| self.class.new(v)}
         else
@@ -182,10 +183,10 @@ class Settingslogic < Hash
     end
     
   end
-  
-  def missing_key(msg)
+
+  def missing_key(key)
     return nil if self.class.suppress_errors
 
-    raise MissingSetting, msg
+    raise MissingSetting, "Missing setting '#{key}' #{@sections.reverse.map{|section| "in '#{section}' section"}.join(' ')}"
   end
 end
