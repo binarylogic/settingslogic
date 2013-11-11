@@ -115,6 +115,12 @@ describe "Settingslogic" do
     Settings4.non_existent_key.should be_nil
   end
 
+  it "should allow environment variables fallback" do
+    Settings5.non_existent_key.should be_nil
+    ENV['SETTINGS5_NON_EXISTENT_KEY']='foo'
+    Settings5.non_existent_key.should == 'foo'
+  end
+
   # This one edge case currently does not pass, because it requires very
   # esoteric code in order to make it pass.  It was judged not worth fixing,
   # as it introduces significant complexity for minor gain.

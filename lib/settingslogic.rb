@@ -33,6 +33,10 @@ class Settingslogic < Hash
       @suppress_errors ||= value
     end
 
+    def environment_vars_fallback(value = nil)
+      @environment_vars_fallback ||= value
+    end
+
     def [](key)
       instance.fetch(key.to_s, nil)
     end
@@ -184,7 +188,13 @@ class Settingslogic < Hash
     
   end
 
+  def environment_var_for(key)
+    (@sections + [key]).join('_').upcase
+  end
+
   def missing_key(key)
+    return ENV[environment_var_for(key)] if self.class.environment_vars_fallback && ENV[environment_var_for(key)]
+
     return nil if self.class.suppress_errors
 
     raise MissingSetting, "Missing setting '#{key}' #{@sections.reverse.map{|section| "in '#{section}' section"}.join(' ')}"
