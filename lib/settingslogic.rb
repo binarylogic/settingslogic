@@ -12,11 +12,11 @@ class Settingslogic < Hash
     end
         
     # Enables Settings.get('nested.key.name') for dynamic access
-    def get(key)
+    def get(key, hash = nil)
       parts = key.split('.')
-      curs = self
+      curs = hash || self
       while p = parts.shift
-        curs = curs.send(p)
+        curs = curs[p] or (yield p if block_given?)
       end
       curs
     end
