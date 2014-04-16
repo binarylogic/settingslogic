@@ -190,6 +190,19 @@ describe "Settingslogic" do
     SettingsEmpty.keys.should eql([])
   end
 
+  context "using a nested namespace (`language.smalltalk`)" do
+    it "returns the right internal nested value" do
+      expect(SettingsNestedNamespace.paradigm).to eq "object oriented"
+    end
+
+    context "when namespace doesn't exists" do
+      it "raises the missing key error" do
+        expect { SettingsInvalidNestedNamespace.paradigm }.to \
+          raise_error Settingslogic::MissingSetting
+      end
+    end
+  end
+
   # Put this test last or else call to .instance will load @instance,
   # masking bugs.
   it "should be a hash" do

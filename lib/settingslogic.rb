@@ -101,14 +101,27 @@ class Settingslogic < Hash
     else
       file_contents = open(hash_or_file).read
       hash = file_contents.empty? ? {} : YAML.load(ERB.new(file_contents).result).to_hash
-      if self.class.namespace
-        hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{hash_or_file}")
-      end
+      hash = namespaced_hash(hash, hash_or_file) if self.class.namespace
       self.replace hash
     end
     @section = section || self.class.source  # so end of error says "in application.yml"
     create_accessors!
   end
+
+  def namespaced_hash(hash, hash_or_file)
+    if self.class.namespace.include? "."
+      nested_namespaced_hash hash, hash_or_file
+    else
+      hash[namespace] or return missing_key("Missing setting '#{namespace}' in #{hash_or_file}")
+    end
+  end
+
+  def nested_namespaced_hash(hash, hash_or_file)
+    self.class.get self.class.namespace, hash do |setting|
+      missing_key "Missing setting '#{setting}' for '#{self.class.namespace}' in #{hash_or_file}"
+    end
+  end
+  private :namespaced_hash, :nested_namespaced_hash
 
   # Called for dynamically-defined keys, and also the first key deferenced at the top-level, if load! is not used.
   # Otherwise, create_accessors! (called by new) will have created actual methods for each key.
