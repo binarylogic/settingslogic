@@ -108,20 +108,20 @@ class Settingslogic < Hash
     create_accessors!
   end
 
-  def namespaced_hash(hash, hash_or_file)
-    if self.class.namespace.include? "."
-      nested_namespaced_hash hash, hash_or_file
+  def missing_setting_action(namespace)
+    if namespace.include? "."
+      proc { missing_key "Missing setting '#{setting}' for '#{namespace}' in #{hash_or_file}" }
     else
-      hash[namespace] or return missing_key("Missing setting '#{namespace}' in #{hash_or_file}")
+      proc { missing_key "Missing setting '#{namespace}' in #{hash_or_file}" }
     end
   end
 
-  def nested_namespaced_hash(hash, hash_or_file)
-    self.class.get self.class.namespace, hash do |setting|
-      missing_key "Missing setting '#{setting}' for '#{self.class.namespace}' in #{hash_or_file}"
-    end
+  def namespaced_hash(hash, hash_or_file)
+    namespace = self.class.namespace
+    self.class.get namespace, hash, &missing_setting_action(namespace)
   end
-  private :namespaced_hash, :nested_namespaced_hash
+
+  private :missing_setting_action, :namespaced_hash
 
   # Called for dynamically-defined keys, and also the first key deferenced at the top-level, if load! is not used.
   # Otherwise, create_accessors! (called by new) will have created actual methods for each key.
