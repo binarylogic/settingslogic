@@ -92,21 +92,27 @@ class Settingslogic < Hash
   # if you are using this in rails. If you pass a string it should be an absolute path to your settings file.
   # Then you can pass a hash, and it just allows you to access the hash via methods.
   def initialize(hash_or_file = self.class.source, section = nil)
-    #puts "new! #{hash_or_file}"
+    puts "new! #{hash_or_file}"
     case hash_or_file
     when nil
       raise Errno::ENOENT, "No file specified as Settingslogic source"
     when Hash
+      puts "hash! #{hash_or_file}"
       self.replace hash_or_file
     else
-      file_contents = open(hash_or_file).read
-      hash = file_contents.empty? ? {} : YAML.load(ERB.new(file_contents).result).to_hash
-      if self.class.namespace
-        hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{hash_or_file}")
+      hash_or_files = hash_or_file.is_a?(Array) ? hash_or_file : [hash_or_file]
+      _hash = {}
+      hash_or_files.each do |file|
+        file_contents = open(file).read
+        hash = file_contents.empty? ? {} : YAML.load(ERB.new(file_contents).result).to_hash
+        if self.class.namespace
+          hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{file}")
+        end
+        _hash.merge!(hash)
       end
-      self.replace hash
+      self.replace _hash
     end
-    @section = section || self.class.source  # so end of error says "in application.yml"
+    @section = section || (self.class.source.is_a?(Array) ? self.class.source.join(',') : self.class.source)  # so end of error says "in application.yml"
     create_accessors!
   end
 
