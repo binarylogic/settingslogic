@@ -3,6 +3,10 @@
 Settingslogic is a simple configuration / settings solution that uses an ERB enabled YAML file. It has been great for
 our apps, maybe you will enjoy it too.  Settingslogic works with Rails, Sinatra, or any Ruby project.
 
+{<img src="https://badge.fury.io/rb/settingslogic.svg" alt="Gem Version" />}[http://badge.fury.io/rb/settingslogic]
+{<img src="https://travis-ci.org/settingslogic/settingslogic.svg" alt="Build Status" />}[https://travis-ci.org/settingslogic/settingslogic]
+{<img src="http://inch-ci.org/github/settingslogic/settingslogic.png?branch=master" alt="Inline docs" />}[http://inch-ci.org/github/settingslogic/settingslogic]
+
 == Helpful links
 
 * <b>Documentation:</b> http://rdoc.info/projects/binarylogic/settingslogic
