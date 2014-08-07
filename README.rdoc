@@ -1,5 +1,7 @@
 = Settingslogic
 
+== Project Moved: This project has been moved to https://github.com/settingslogic/settingslogic
+
 Settingslogic is a simple configuration / settings solution that uses an ERB enabled YAML file. It has been great for
 our apps, maybe you will enjoy it too.  Settingslogic works with Rails, Sinatra, or any Ruby project.
 
