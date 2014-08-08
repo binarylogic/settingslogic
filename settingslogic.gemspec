@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/binarylogic/settingslogic"
   s.summary     = %q{A simple and straightforward settings solution that uses an ERB enabled YAML file and a singleton design pattern.}
   s.description = %q{A simple and straightforward settings solution that uses an ERB enabled YAML file and a singleton design pattern.}
+  s.license     = 'MIT'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
