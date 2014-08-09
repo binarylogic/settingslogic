@@ -19,6 +19,10 @@ class Settingslogic < Hash
         curs = curs.send(p)
       end
       curs
+    rescue
+      return nil if suppress_errors
+
+      raise
     end
 
     def source(value = nil)

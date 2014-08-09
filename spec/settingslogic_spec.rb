@@ -115,6 +115,18 @@ describe "Settingslogic" do
     Settings4.non_existent_key.should be_nil
   end
 
+
+  context "#get" do
+    it "should suppress errors for nonexistent nested parameters" do
+      expect { Settings4.get('non.existent.key') }.not_to raise_exception
+    end
+
+    it "should throw an exception for nonexistent nested parameters when suppress_errors=false" do
+      expect { Settings.get('non.existent.key') }.to raise_exception
+    end
+  end
+
+
   # This one edge case currently does not pass, because it requires very
   # esoteric code in order to make it pass.  It was judged not worth fixing,
   # as it introduces significant complexity for minor gain.
