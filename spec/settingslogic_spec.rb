@@ -190,6 +190,11 @@ describe "Settingslogic" do
     SettingsEmpty.keys.should eql([])
   end
 
+  it "should delegate to_ary and to_str to Hash" do
+    [ Settings, ['a'] ].flatten.should == [Settings, 'a']
+    [ Settings, ['a'] ].join.should == 'Settingsa'
+  end
+
   # Put this test last or else call to .instance will load @instance,
   # masking bugs.
   it "should be a hash" do

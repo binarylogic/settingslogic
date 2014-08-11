@@ -113,6 +113,7 @@ class Settingslogic < Hash
   # Called for dynamically-defined keys, and also the first key deferenced at the top-level, if load! is not used.
   # Otherwise, create_accessors! (called by new) will have created actual methods for each key.
   def method_missing(name, *args, &block)
+    super if [:to_ary, :to_str].include?(name) # delegate to Hash
     key = name.to_s
     return missing_key("Missing setting '#{key}' in #{@section}") unless has_key? key
     value = fetch(key)
