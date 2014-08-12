@@ -6,6 +6,7 @@ require 'settings'
 require 'settings2'
 require 'settings3'
 require 'settings4'
+require 'settings5'
 require 'settings_empty'
 
 # Needed to test Settings3
