@@ -67,6 +67,28 @@ If your default settings seem to be overwriting your environment-specific settin
   require 'yaml'
   YAML::ENGINE.yamler= 'syck'
 
+==== Namespaced settings
+
+Maybe you need to use another semantics for your namespace besides the current
+environment. You can put a nested namespace in your settings and you are good
+to go.
+
+  # /some/file/here.yml
+  professional:
+    preferences:
+      order: desc
+  client:
+    prefs:
+      order: asc
+
+  class ProfessionalPreferences < Settingslogic
+    source "/some/file/here.yml"
+    namespace "professional.preferences"
+  end
+
+  >> ProfessionalPreferences.order
+  => "desc"
+
 === 3. Access your settings
 
   >> Rails.env
