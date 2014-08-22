@@ -131,6 +131,48 @@ class Settingslogic < Hash
     create_accessor_for(key, val)
   end
 
+  # Create a nested structure and set value.
+  # For example: set("foo.bar.tar", 123)
+  # Resulting Settingslogic/Hash:
+  # { "foo" => { "bar" => { "tar" => 123 }}}
+  def set(nested_key, val)
+    target_settings_field = self
+    settings_key_portions = nested_key.to_s.split(".")
+    parent_key_portions, final_key = settings_key_portions[0..-2], settings_key_portions[-1]
+    parent_key_portions.each do |key_portion|
+      target_settings_field[key_portion] ||= Settingslogic.new({})
+      target_settings_field = target_settings_field[key_portion]
+    end
+    target_settings_field[final_key] = val
+    create_accessors!
+  end
+
+  # Like #set, but only sets the value if the key is not already set
+  # Returns the existing value or the newly-set default value
+  def set_default(nested_key, val)
+    target_settings_field = self
+    settings_key_portions = nested_key.to_s.split(".")
+    parent_key_portions, final_key = settings_key_portions[0..-2], settings_key_portions[-1]
+    parent_key_portions.each do |key_portion|
+      target_settings_field[key_portion] ||= Settingslogic.new({})
+      target_settings_field = target_settings_field[key_portion]
+    end
+    target_settings_field[final_key] ||= val
+    target_settings_field[final_key]
+  end
+
+  def nested_value(nested_key)
+    target_settings_field = self
+    settings_key_portions = nested_key.to_s.split(".")
+    parent_key_portions, final_key = settings_key_portions[0..-2], settings_key_portions[-1]
+    parent_key_portions.each do |key_portion|
+      target_settings_field[key_portion] ||= Settingslogic.new({})
+      target_settings_field = target_settings_field[key_portion]
+    end
+    target_settings_field[final_key]
+  end
+  alias :exists? :nested_value
+
   # Returns an instance of a Hash object
   def to_hash
     Hash[self]

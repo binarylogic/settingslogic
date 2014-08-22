@@ -204,4 +204,58 @@ describe "Settingslogic" do
     end
   end
 
+  describe "#set('nested.key', value)" do
+    it "works like []= for non-dotted keys" do
+      Settings.set("simple", "value")
+      Settings.simple.should == "value"
+    end
+
+    it "creates new nested structures" do
+      Settings.set("nested.key", "value")
+      Settings.nested.key.should == "value"
+    end
+
+    it "reuses existing structures" do
+      Settings.set("language.ruby.paradigm", "scripting")
+      Settings.language.haskell.paradigm.should == "functional"
+      Settings.language.ruby.paradigm.should == "scripting"
+    end
+  end
+
+  describe "#set_default('nested.key', value)" do
+    it "works like #set if key 'nested.key' missing" do
+      Settings.set("nested", {})
+      Settings.set_default("nested.key", "default").should == "default"
+      Settings.nested.key.should == "default"
+    end
+
+    it "works like #set if key 'nested' missing" do
+      Settings.set_default("nested.key", "default").should == "default"
+      Settings.nested.key.should == "default"
+    end
+
+    it "does nothing if nested.key is set" do
+      Settings.set("nested.key", "value")
+      Settings.set_default("nested.key", "default").should == "value"
+      Settings.nested.key.should == "value"
+    end
+  end
+
+  describe "#exists?('nested.key') && #value('nested.key')" do
+    before { Settings.reload! }
+    it "returns truthy if nested.key is set" do
+      Settings.set("nested.key", "value")
+      Settings.nested_value("nested.key").should == "value"
+    end
+
+    it "returns falsy if nested is not set" do
+      Settings.nested_value("nested.key").should be_nil
+    end
+
+    it "returns falsy if nested.key is not set" do
+      Settings.set("nested", {})
+      Settings.exists?("nested.key").should be_nil
+    end
+  end
+
 end
