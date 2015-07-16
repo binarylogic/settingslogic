@@ -1,16 +1,24 @@
 require File.expand_path(File.dirname(__FILE__) + "/spec_helper")
 
 describe "Settingslogic" do
+  it "should respond to a defined setting" do
+    Settings.should respond_to(:setting2)
+  end
+
   it "should access settings" do
     Settings.setting2.should == 5
   end
-  
+
   it "should access nested settings" do
     Settings.setting1.setting1_child.should == "saweet"
   end
-  
+
   it "should access settings in nested arrays" do
     Settings.array.first.name.should == "first"
+  end
+
+  it "should respond to deep nested settings" do
+    Settings.setting1.deep.should respond_to(:another)
   end
 
   it "should access deep nested settings" do
@@ -39,7 +47,7 @@ describe "Settingslogic" do
     Settings.language.haskell.paradigm.should == 'functional'
     Settings.language.smalltalk.paradigm.should == 'object oriented'
   end
-  
+
   it "should not collide with global methods" do
     Settings3.nested.collides.does.should == 'not either'
     Settings3[:nested] = 'fooey'
@@ -77,7 +85,7 @@ describe "Settingslogic" do
     end
     e.should_not be_nil
     e.message.should =~ /Missing setting 'erlang' in 'language' section/
-    
+
     Settings.language['erlang'].should be_nil
     Settings.language['erlang'] = 5
     Settings.language['erlang'].should == 5
@@ -168,14 +176,14 @@ describe "Settingslogic" do
   it "should allow a name setting to be overriden" do
     Settings.name.should == 'test'
   end
-  
+
   it "should allow symbolize_keys" do
     Settings.reload!
-    result = Settings.language.haskell.symbolize_keys 
+    result = Settings.language.haskell.symbolize_keys
     result.class.should == Hash
-    result.should == {:paradigm => "functional"} 
+    result.should == {:paradigm => "functional"}
   end
-  
+
   it "should allow symbolize_keys on nested hashes" do
     Settings.reload!
     result = Settings.language.symbolize_keys
