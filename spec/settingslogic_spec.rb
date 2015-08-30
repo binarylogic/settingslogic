@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + "/spec_helper")
 
 describe "Settingslogic" do
   it "should access settings" do
-    Settings.setting2.should == 5
+    Settings.setting2.should == 8
   end
   
   it "should access nested settings" do
