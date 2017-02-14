@@ -204,4 +204,8 @@ describe "Settingslogic" do
     end
   end
 
+  it 'should handle after_load' do
+    Settings5.setting1.setting1_child.should eql 'supa saweet'
+  end
+
 end

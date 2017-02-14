@@ -54,11 +54,18 @@ class Settingslogic < Hash
       load!
     end
 
+    def after_load( &blk )
+      @after_load = blk
+    end
+
     private
       def instance
         return @instance if @instance
         @instance = new
         create_accessors!
+        if @after_load
+          @after_load.call
+        end
         @instance
       end
 
