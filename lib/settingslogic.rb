@@ -1,14 +1,15 @@
 require "yaml"
 require "erb"
 require 'open-uri'
+require 'delegate'
 
 # A simple settings solution using a YAML file. See README for more information.
-class Settingslogic < Hash
+class Settingslogic < SimpleDelegator
   class MissingSetting < StandardError; end
 
   class << self
     def name # :nodoc:
-      self.superclass != Hash && instance.key?("name") ? instance.name : super
+      self.superclass != SimpleDelegator && instance.key?("name") ? instance.name : super
     end
         
     # Enables Settings.get('nested.key.name') for dynamic access
@@ -95,16 +96,16 @@ class Settingslogic < Hash
     #puts "new! #{hash_or_file}"
     case hash_or_file
     when nil
-      raise Errno::ENOENT, "No file specified as Settingslogic source"
+      Kernel.raise Errno::ENOENT, "No file specified as Settingslogic source"
     when Hash
-      self.replace hash_or_file
+      super hash_or_file
     else
-      file_contents = open(hash_or_file).read
+      file_contents = Kernel.open(hash_or_file).read
       hash = file_contents.empty? ? {} : YAML.load(ERB.new(file_contents).result).to_hash
       if self.class.namespace
         hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{hash_or_file}")
       end
-      self.replace hash
+      super hash
     end
     @section = section || self.class.source  # so end of error says "in application.yml"
     create_accessors!
@@ -113,6 +114,8 @@ class Settingslogic < Hash
   # Called for dynamically-defined keys, and also the first key deferenced at the top-level, if load! is not used.
   # Otherwise, create_accessors! (called by new) will have created actual methods for each key.
   def method_missing(name, *args, &block)
+    return super if respond_to_missing?(name, false)
+
     key = name.to_s
     return missing_key("Missing setting '#{key}' in #{@section}") unless has_key? key
     value = fetch(key)
@@ -133,7 +136,7 @@ class Settingslogic < Hash
 
   # Returns an instance of a Hash object
   def to_hash
-    Hash[self]
+    Hash[__getobj__]
   end
 
   # This handles naming collisions with Sinatra/Vlad/Capistrano. Since these use a set()
@@ -186,6 +189,6 @@ class Settingslogic < Hash
   def missing_key(msg)
     return nil if self.class.suppress_errors
 
-    raise MissingSetting, msg
+    Kernel.raise MissingSetting, msg
   end
 end
