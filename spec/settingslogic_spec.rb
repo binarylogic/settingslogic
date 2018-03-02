@@ -84,17 +84,19 @@ describe "Settingslogic" do
 
     Settings.language['erlang'] = {'paradigm' => 'functional'}
     Settings.language.erlang.paradigm.should == 'functional'
-    Settings.respond_to?('erlang').should be_false
+    Settings.respond_to?('erlang').should be false
 
     Settings.reload!
     Settings.language['erlang'].should be_nil
 
     Settings.language[:erlang] ||= 5
     Settings.language[:erlang].should == 5
+    Settings['language']['erlang'].should == 5
 
     Settings.language[:erlang] = {}
     Settings.language[:erlang][:paradigm] = 'functional'
     Settings.language.erlang.paradigm.should == 'functional'
+    Settings.language.erlang['paradigm'].should == 'functional'
 
     Settings[:toplevel] = '42'
     Settings.toplevel.should == '42'
@@ -193,7 +195,7 @@ describe "Settingslogic" do
   # Put this test last or else call to .instance will load @instance,
   # masking bugs.
   it "should be a hash" do
-    Settings.send(:instance).should be_is_a(Hash)
+    Settings.send(:instance).__getobj__.should be_is_a(Hash)
   end
 
   describe "#to_hash" do
