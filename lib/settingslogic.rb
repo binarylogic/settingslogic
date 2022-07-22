@@ -104,7 +104,7 @@ class Settingslogic < Hash
       _hash = {}
       hash_or_files.each do |file|
         file_contents = open(file).read
-        hash = file_contents.empty? ? {} : YAML.load(ERB.new(file_contents).result).to_hash
+        hash = file_contents.empty? ? {} : initialize_yml(file_contents) #YAML.load(ERB.new(file_contents).result).to_hash
         if self.class.namespace
           hash = hash[self.class.namespace] or return missing_key("Missing setting '#{self.class.namespace}' in #{file}")
         end
@@ -114,6 +114,14 @@ class Settingslogic < Hash
     end
     @section = section || (self.class.source.is_a?(Array) ? self.class.source.join(',') : self.class.source)  # so end of error says "in application.yml"
     create_accessors!
+  end
+
+  def initialize_yml(content)
+    begin
+      YAML.load(ERB.new(content).result, aliases: true).to_hash
+    rescue ArgumentError
+      YAML.load(ERB.new(content).result).to_hash
+    end
   end
 
   # Called for dynamically-defined keys, and also the first key deferenced at the top-level, if load! is not used.
