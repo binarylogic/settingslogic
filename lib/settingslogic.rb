@@ -192,8 +192,8 @@ class Settingslogic < Hash
   private
   
   def parse_yaml_content(file_content)
-    YAML.load(ERB.new(file_contents).result, aliases: true).to_hash
+    YAML.load(ERB.new(file_content).result, aliases: true).to_hash
   rescue ArgumentError
-    YAML.load(ERB.new(file_contents).result).to_hash
+    YAML.load(ERB.new(file_content).result).to_hash
   end
 end
