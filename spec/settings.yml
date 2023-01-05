@@ -13,7 +13,7 @@ language:
   haskell:
     paradigm: functional
   smalltalk:
-    paradigm: object oriented 
+    paradigm: object oriented
 
 collides:
   does: not
@@ -26,3 +26,10 @@ array:
     name: first
   -
     name: second
+
+alias: &default
+  example:
+    key: value
+
+uses_default_alias:
+  <<: *default
